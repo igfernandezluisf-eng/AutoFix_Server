@@ -1,7 +1,7 @@
 # ==============================================================================
 # PROYECTO: AutoFix Server (Backend)
-# MÓDULO:   Admin Dashboard Deluxe (UI/UX Upgrade)
-# VERSIÓN:  3.0.0 (Secure & Beautiful)
+# MÓDULO:   Admin Dashboard ULTRA (Visual Overhaul)
+# VERSIÓN:  3.1.0 (Distinct & Secure)
 # ==============================================================================
 
 from flask import Flask, request, jsonify, render_template_string, redirect, url_for, session
@@ -11,13 +11,11 @@ import random
 import time
 import math
 import os
-import sys
 
 app = Flask(__name__)
 app.secret_key = "AUTOFIX_SUPER_SECRET_KEY_2025"
 CORS(app) 
 
-# Configuración de DB
 if os.name == 'nt':
     DB_NAME = "autofix_users.db"
 else:
@@ -25,13 +23,11 @@ else:
 
 ADMIN_PASSWORD = "admin"
 
-# Inicializar DB
 def init_db():
     try:
         conn = sqlite3.connect(DB_NAME)
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, password TEXT, plan TEXT DEFAULT 'FREE', status TEXT DEFAULT 'ACTIVE', notes TEXT)''')
-        # Usuario de prueba
         try:
             c.execute("INSERT INTO users (email, password, plan, notes) VALUES (?, ?, ?, ?)", ("mecanico@test.com", "1234", "MASTER", "Usuario Beta"))
             conn.commit()
@@ -46,152 +42,155 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-# Ejecutar inicio DB
 init_db() 
 
-# --- DASHBOARD ADMIN DELUXE (HTML/CSS MODERNO) ---
+# --- DASHBOARD ADMIN ULTRA (DISEÑO TOTALMENTE NUEVO) ---
 DASHBOARD_HTML = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoFix SUPER ADMIN</title>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+    <title>AutoFix CONTROL TOWER v3.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        /* ESTILO GENERAL TECH-NOIR */
-        body { background-color: #0f1015; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        /* RESET & BASE */
+        * { box-sizing: border-box; }
+        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
         /* HEADER */
-        .header { width: 100%; background: #141419; padding: 20px; border-bottom: 1px solid #333; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        h1 { margin: 0; color: #fff; letter-spacing: 2px; font-weight: 800; }
-        h1 span { color: #00f3ff; }
+        .navbar { width: 100%; background: #161b22; border-bottom: 1px solid #30363d; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .logo { font-size: 1.5rem; font-weight: bold; color: white; letter-spacing: 1px; }
+        .logo span { color: #58a6ff; }
+        .logout-btn { color: #f85149; text-decoration: none; font-weight: bold; border: 1px solid #f85149; padding: 5px 15px; border-radius: 6px; transition: 0.2s; }
+        .logout-btn:hover { background: #f85149; color: white; }
 
-        /* CONTENEDOR PRINCIPAL */
-        .container { width: 90%; max-width: 1000px; margin-top: 30px; }
+        /* CONTAINER */
+        .container { width: 95%; max-width: 1200px; margin-top: 40px; }
 
-        /* ESTADISTICAS */
-        .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
-        .stat-card { background: #1a1b20; padding: 20px; border-radius: 12px; border: 1px solid #333; text-align: center; min-width: 150px; flex: 1; transition: transform 0.2s; }
-        .stat-card:hover { transform: translateY(-5px); border-color: #00f3ff; }
-        .stat-num { font-size: 2.5rem; font-weight: bold; color: white; margin: 0; }
-        .stat-label { color: #888; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        /* KPI CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; text-align: center; }
+        .card h3 { margin: 0; font-size: 0.9rem; color: #8b949e; text-transform: uppercase; }
+        .card .number { font-size: 2.5rem; font-weight: bold; color: white; margin: 10px 0 0 0; }
+        .card.blue .number { color: #58a6ff; }
+        .card.gold .number { color: #e3b341; }
+        .card.green .number { color: #3fb950; }
 
-        /* FORMULARIO AGREGAR */
-        .add-box { background: #1a1b20; padding: 20px; border-radius: 12px; border: 1px solid #333; display: flex; gap: 10px; align-items: center; margin-bottom: 30px; flex-wrap: wrap; }
-        .add-title { font-weight: bold; color: #00ff9d; margin-right: 15px; }
-        input { flex: 1; padding: 12px; background: #0f1015; border: 1px solid #444; color: white; border-radius: 6px; outline: none; }
-        input:focus { border-color: #00f3ff; }
-        button { padding: 12px 20px; background: #00f3ff; color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #00c2cc; transform: scale(1.05); }
+        /* ADD USER FORM */
+        .panel { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 25px; margin-bottom: 30px; }
+        .panel-header { font-size: 1.2rem; font-weight: bold; color: white; margin-bottom: 20px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+        .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        input { flex: 1; padding: 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: white; outline: none; }
+        input:focus { border-color: #58a6ff; }
+        .btn-add { background: #238636; color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-add:hover { background: #2ea043; }
 
-        /* TABLA DE USUARIOS */
-        .table-container { background: #1a1b20; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background-color: #222; color: #888; padding: 15px; text-align: left; font-size: 0.8rem; text-transform: uppercase; }
-        td { padding: 15px; border-bottom: 1px solid #2a2a30; color: #ccc; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: #25262c; }
+        /* TABLE */
+        .table-responsive { overflow-x: auto; background: #161b22; border-radius: 10px; border: 1px solid #30363d; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { text-align: left; padding: 15px; background: #21262d; color: #8b949e; font-size: 0.85rem; text-transform: uppercase; }
+        td { padding: 15px; border-top: 1px solid #30363d; color: #c9d1d9; vertical-align: middle; }
+        tr:hover { background: #21262d; }
         
-        /* BADGES (ETIQUETAS) */
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
-        .bg-free { background: #333; color: #aaa; border: 1px solid #555; }
-        .bg-pro { background: rgba(0, 243, 255, 0.1); color: #00f3ff; border: 1px solid #00f3ff; }
-        .bg-master { background: rgba(255, 170, 0, 0.1); color: #ffaa00; border: 1px solid #ffaa00; box-shadow: 0 0 10px rgba(255, 170, 0, 0.2); }
-        .text-banned { color: #ff0055; font-weight: bold; text-decoration: line-through; }
+        /* BADGES */
+        .tag { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        .tag-free { background: #30363d; color: #c9d1d9; border: 1px solid #8b949e; }
+        .tag-pro { background: rgba(88, 166, 255, 0.15); color: #58a6ff; border: 1px solid #58a6ff; }
+        .tag-master { background: rgba(227, 179, 65, 0.15); color: #e3b341; border: 1px solid #e3b341; box-shadow: 0 0 8px rgba(227, 179, 65, 0.2); }
+        .tag-banned { background: rgba(248, 81, 73, 0.15); color: #f85149; text-decoration: line-through; border: 1px solid #f85149; }
+
+        /* ACTION BUTTONS */
+        .actions { display: flex; gap: 5px; }
+        .act-btn { padding: 6px 12px; border: 1px solid #30363d; background: #21262d; color: #c9d1d9; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: 0.2s; }
+        .act-btn:hover { background: #30363d; color: white; }
+        .act-btn.danger { color: #f85149; border-color: #f85149; }
+        .act-btn.danger:hover { background: #f85149; color: white; }
         
-        /* BOTONES DE ACCION */
-        .action-form { display: inline-flex; gap: 5px; }
-        .mini-btn { padding: 5px 10px; font-size: 0.7rem; border-radius: 4px; opacity: 0.7; }
-        .mini-btn:hover { opacity: 1; transform: scale(1.1); }
-        .btn-ban { background: #ff0055; color: white; }
-        
-        /* LOGIN BOX */
-        .login-wrapper { display: flex; height: 100vh; width: 100%; align-items: center; justify-content: center; background: radial-gradient(circle at center, #1a1b20 0%, #0f1015 100%); }
-        .login-box { width: 350px; padding: 40px; background: #141419; border: 1px solid #333; border-radius: 15px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        
-        .footer-link { margin-top: 40px; margin-bottom: 20px; color: #666; text-decoration: none; font-size: 0.9rem; }
-        .footer-link:hover { color: #fff; }
+        /* LOGIN SCREEN */
+        .login-wrap { display: flex; height: 100vh; width: 100%; align-items: center; justify-content: center; background: #010409; }
+        .login-card { width: 400px; padding: 40px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; text-align: center; }
+        .login-btn { width: 100%; margin-top: 20px; padding: 12px; background: #58a6ff; border: none; border-radius: 6px; color: black; font-weight: bold; cursor: pointer; }
 
     </style>
 </head>
 <body>
+
     {% if not logged_in %}
-    <div class="login-wrapper">
-        <div class="login-box">
-            <h2 style="color:#fff; margin-bottom:30px">ACCESO <span style="color:#00f3ff">ADMIN</span></h2>
+    <div class="login-wrap">
+        <div class="login-card">
+            <h1 style="margin-bottom:30px">AutoFix <span style="color:#58a6ff">SECURE</span></h1>
             <form method="POST" action="/admin/login">
-                <input type="password" name="password" placeholder="Ingrese Clave Maestra" required style="text-align:center; font-size:1.2rem;">
-                <button type="submit" style="width:100%; margin-top:20px;">INICIAR SESIÓN</button>
+                <input type="password" name="password" placeholder="🔒 Ingrese Clave de Admin" required style="text-align:center; font-size:1.1rem;">
+                <button type="submit" class="login-btn">ACCEDER AL SISTEMA</button>
             </form>
-            {% if error %}
-                <p style="color:#ff0055; margin-top:15px">Clave incorrecta</p>
-            {% endif %}
+            {% if error %} <p style="color:#f85149; margin-top:15px">⛔ Acceso Denegado</p> {% endif %}
         </div>
     </div>
     {% else %}
-    
-    <div class="header">
-        <h1>AutoFix <span style="color:#00f3ff">COMMAND CENTER</span></h1>
+
+    <div class="navbar">
+        <div class="logo">AutoFix <span>TOWER v3.1</span></div>
+        <a href="/admin/logout" class="logout-btn">Cerrar Sesión</a>
     </div>
 
     <div class="container">
         
-        <div class="stats">
-            <div class="stat-card"><p class="stat-num">{{ stats.total }}</p><p class="stat-label">Usuarios Totales</p></div>
-            <div class="stat-card" style="border-color:#ffaa00"><p class="stat-num" style="color:#ffaa00">{{ stats.masters }}</p><p class="stat-label">Nivel MASTER</p></div>
-            <div class="stat-card" style="border-color:#00ff9d"><p class="stat-num" style="color:#00ff9d">{{ stats.active }}</p><p class="stat-label">Activos</p></div>
+        <div class="stats-grid">
+            <div class="card"><div class="number">{{ stats.total }}</div><h3>Usuarios Totales</h3></div>
+            <div class="card gold"><div class="number">{{ stats.masters }}</div><h3>Nivel Master</h3></div>
+            <div class="card blue"><div class="number">{{ stats.pros }}</div><h3>Nivel Pro</h3></div>
+            <div class="card green"><div class="number">{{ stats.active }}</div><h3>Activos</h3></div>
         </div>
 
-        <div class="add-box">
-            <span class="add-title">+ NUEVO BETA TESTER</span>
-            <form action="/admin/add_user" method="POST" style="display:flex; gap:10px; flex:1;">
-                <input type="email" name="email" placeholder="Email del Mecánico" required>
-                <input type="text" name="notes" placeholder="Notas (Ej. Taller Norte)">
-                <button type="submit" style="background:#00ff9d; color:black;">REGISTRAR</button>
+        <div class="panel">
+            <div class="panel-header">Registrar Nuevo Usuario Beta</div>
+            <form action="/admin/add_user" method="POST" class="form-row">
+                <input type="email" name="email" placeholder="Correo del Mecánico" required>
+                <input type="text" name="notes" placeholder="Nota (Ej. Amigo Juan)">
+                <button type="submit" class="btn-add">CREAR CUENTA</button>
             </form>
         </div>
 
-        <div class="table-container">
+        <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>Usuario / Email</th>
-                        <th>Plan Actual</th>
+                        <th>Usuario / Notas</th>
+                        <th>Nivel de Acceso</th>
                         <th>Estado</th>
-                        <th>Acciones Rápidas</th>
+                        <th>Gestión de Licencia</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for user in users %}
                     <tr>
                         <td>
-                            <strong style="color:white; font-size:1rem;">{{ user.email }}</strong><br>
-                            <small style="color:#666">{{ user.notes }}</small>
+                            <strong style="color:white; font-size:1rem">{{ user.email }}</strong><br>
+                            <span style="color:#8b949e; font-size:0.8rem">{{ user.notes }}</span>
                         </td>
                         <td>
-                            <span class="badge 
-                                {% if user.plan == 'MASTER' %}bg-master{% elif user.plan == 'PRO' %}bg-pro{% else %}bg-free{% endif %}">
+                            <span class="tag 
+                                {% if user.plan == 'MASTER' %}tag-master{% elif user.plan == 'PRO' %}tag-pro{% else %}tag-free{% endif %}">
                                 {{ user.plan }}
                             </span>
                         </td>
                         <td>
-                            {% if user.status == 'BANNED' %}
-                                <span class="text-banned">BLOQUEADO</span>
-                            {% else %}
-                                <span style="color:#00ff9d">ACTIVO</span>
-                            {% endif %}
+                            <span style="color: {% if user.status == 'BANNED' %}#f85149{% else %}#3fb950{% endif %}">
+                                {{ user.status }}
+                            </span>
                         </td>
                         <td>
-                            <form action="/admin/update" method="POST" class="action-form">
+                            <form action="/admin/update" method="POST" class="actions">
                                 <input type="hidden" name="email" value="{{ user.email }}">
-                                <button name="action" value="set_free" class="mini-btn bg-free" title="Bajar a Gratis">FREE</button>
-                                <button name="action" value="set_pro" class="mini-btn bg-pro" title="Subir a PRO">PRO</button>
-                                <button name="action" value="set_master" class="mini-btn bg-master" title="DAR MODO DIOS">MASTER</button>
+                                <button name="action" value="set_free" class="act-btn" title="Nivel Básico">FREE</button>
+                                <button name="action" value="set_pro" class="act-btn" title="Nivel Intermedio" style="color:#58a6ff">PRO</button>
+                                <button name="action" value="set_master" class="act-btn" title="Nivel Dios" style="color:#e3b341">MASTER</button>
+                                
                                 {% if user.status == 'BANNED' %}
-                                    <button name="action" value="unban" class="mini-btn" style="background:#00ff9d; color:black">UNLOCK</button>
+                                    <button name="action" value="unban" class="act-btn" style="color:#3fb950">UNLOCK</button>
                                 {% else %}
-                                    <button name="action" value="ban" class="mini-btn btn-ban">BAN</button>
+                                    <button name="action" value="ban" class="act-btn danger">BLOCK</button>
                                 {% endif %}
                             </form>
                         </td>
@@ -200,12 +199,14 @@ DASHBOARD_HTML = """
                 </tbody>
             </table>
         </div>
-        
-        <div style="text-align:center;">
-            <a href="/admin/logout" class="footer-link">🔒 Cerrar Sesión Segura</a>
+
+        <div style="text-align:center; margin-top:40px; color:#8b949e; font-size:0.8rem;">
+            AutoFix Server Backend • Running on Render Cloud
         </div>
+
     </div>
     {% endif %}
+
 </body>
 </html>
 """
@@ -213,18 +214,23 @@ DASHBOARD_HTML = """
 # --- RUTAS DE LOGIN Y ADMIN ---
 @app.route('/admin', methods=['GET'])
 def admin_panel():
-    if not session.get('logged_in'):
-        return render_template_string(DASHBOARD_HTML, logged_in=False)
-    
-    conn = get_db_connection()
-    users = conn.execute('SELECT * FROM users ORDER BY rowid DESC').fetchall()
-    stats = {
-        "total": len(users),
-        "masters": len([u for u in users if u['plan'] == 'MASTER']),
-        "active": len([u for u in users if u['status'] == 'ACTIVE'])
-    }
-    conn.close()
-    return render_template_string(DASHBOARD_HTML, logged_in=True, users=users, stats=stats)
+    try:
+        if not session.get('logged_in'):
+            return render_template_string(DASHBOARD_HTML, logged_in=False)
+        
+        conn = get_db_connection()
+        users = conn.execute('SELECT * FROM users ORDER BY rowid DESC').fetchall()
+        
+        stats = {
+            "total": len(users),
+            "masters": len([u for u in users if u['plan'] == 'MASTER']),
+            "pros": len([u for u in users if u['plan'] == 'PRO']),
+            "active": len([u for u in users if u['status'] == 'ACTIVE'])
+        }
+        conn.close()
+        return render_template_string(DASHBOARD_HTML, logged_in=True, users=users, stats=stats)
+    except Exception as e:
+        return f"Error Crítico DB: {e}"
 
 @app.route('/admin/login', methods=['POST'])
 def admin_login():
