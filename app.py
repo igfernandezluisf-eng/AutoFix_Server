@@ -1,7 +1,7 @@
 # ==============================================================================
 # PROYECTO: AutoFix Server (Backend)
 # MÓDULO:   Gestor de Licencias + SIMULADOR DE MOTOR
-# VERSIÓN:  2.0.0 (Engine Running)
+# VERSIÓN:  2.0.1 (Render Hotfix - DB AutoInit)
 # ==============================================================================
 
 from flask import Flask, request, jsonify, render_template_string, redirect, url_for, session
@@ -10,6 +10,7 @@ import sqlite3
 import random
 import time
 import math
+import os
 
 app = Flask(__name__)
 app.secret_key = "AUTOFIX_SUPER_SECRET_KEY_2025"
@@ -20,17 +21,31 @@ ADMIN_PASSWORD = "admin"
 
 # --- BASE DE DATOS (USUARIOS) ---
 def init_db():
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, password TEXT, plan TEXT DEFAULT 'FREE', status TEXT DEFAULT 'ACTIVE', notes TEXT)''')
-    c.execute("INSERT OR IGNORE INTO users (email, password, plan, notes) VALUES (?, ?, ?, ?)", ("mecanico@test.com", "1234", "MASTER", "Usuario Beta"))
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, password TEXT, plan TEXT DEFAULT 'FREE', status TEXT DEFAULT 'ACTIVE', notes TEXT)''')
+        # Intentar crear usuario base si no existe
+        try:
+            c.execute("INSERT INTO users (email, password, plan, notes) VALUES (?, ?, ?, ?)", ("mecanico@test.com", "1234", "MASTER", "Usuario Beta"))
+            conn.commit()
+        except sqlite3.IntegrityError:
+            pass # Ya existe
+        conn.close()
+        print("✅ BASE DE DATOS INICIALIZADA CORRECTAMENTE")
+    except Exception as e:
+        print(f"❌ ERROR AL INICIAR DB: {e}")
 
 def get_db_connection():
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row
     return conn
+
+# --- 🔥 ESTO ES LO QUE ARREGLA EL ERROR 500 🔥 ---
+# Ejecutamos la creación de la DB inmediatamente al leer el archivo
+# No esperamos al "main".
+init_db() 
+# ---------------------------------------------------
 
 # --- DASHBOARD ADMIN HTML (RESUMIDO) ---
 DASHBOARD_HTML = """
@@ -80,12 +95,11 @@ def api_login():
 # --- 🔧 MÓDULO NUEVO: SIMULADOR DE MOTOR (/live) ---
 @app.route('/live', methods=['GET'])
 def live_data():
-    # Esta función simula que el carro está prendido
     return jsonify({
         "connected": True,
         "vin": "1G1JC5444W720589",
-        "rpm": int(800 + (math.sin(time.time()) * 50) + (random.random() * 20)), # RPM oscilando en ralentí
-        "coolant_temp": int(90 + (math.sin(time.time()/10) * 5)) # Temp oscilando
+        "rpm": int(800 + (math.sin(time.time()) * 50) + (random.random() * 20)), 
+        "coolant_temp": int(90 + (math.sin(time.time()/10) * 5)) 
     })
 
 # --- MÓDULO SENSORES EXTRA (/sensors/all) ---
@@ -98,6 +112,6 @@ def all_sensors():
     })
 
 if __name__ == '__main__':
-    init_db()
-    print("🚀 AutoFix SERVER + ENGINE SIMULATOR -> CORRIENDO EN PUERTO 5000")
+    # Esto solo corre en su PC local para pruebas
+    print("🚀 AutoFix SERVER LOCAL START")
     app.run(debug=True, port=5000)
