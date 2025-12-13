@@ -1,6 +1,6 @@
 # ==============================================================================
 # PROYECTO: AutoFix Server (Backend)
-# MÓDULO:   Restauración Admin Total (v5.4.0)
+# MÓDULO:   Restauración Admin Total (v5.5.0 - Delete Added)
 # REGLA DE ORO: INTEGRIDAD TOTAL - PROHIBIDO SIMPLIFICAR
 # ==============================================================================
 
@@ -60,7 +60,7 @@ DASHBOARD_HTML = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoFix CONTROL TOWER v5.4</title>
+    <title>AutoFix CONTROL TOWER v5.5</title>
     <style>
         body { background-color: #0d1117; color: #c9d1d9; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
         .navbar { width: 100%; background: #161b22; border-bottom: 1px solid #30363d; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
@@ -92,7 +92,7 @@ DASHBOARD_HTML = """
     </div>
     {% else %}
     <div class="navbar">
-        <div style="font-size: 1.5rem; font-weight: bold;">AutoFix <span>TOWER v5.4</span></div>
+        <div style="font-size: 1.5rem; font-weight: bold;">AutoFix <span>TOWER v5.5</span></div>
         <a href="/admin/logout" style="color: #f85149; text-decoration: none; font-weight: bold;">Cerrar Sesión</a>
     </div>
     <div class="container">
@@ -129,6 +129,7 @@ DASHBOARD_HTML = """
                             {% else %}
                                 <button name="action" value="ban" class="act-btn" style="color:#f85149">BLOCK</button>
                             {% endif %}
+                            <button name="action" value="delete" class="act-btn" style="color:#ff0000; border-color:#ff0000; font-weight:bold;" onclick="return confirm('ATENCIÓN: ¿Estás seguro de ELIMINAR a este usuario? Esta acción es irreversible y borrará sus datos de la base de datos.')">X</button>
                         </form>
                     </td>
                 </tr>
@@ -182,6 +183,7 @@ def update_user():
     elif action == 'set_master': c.execute("UPDATE users SET plan='MASTER' WHERE email=%s", (email,))
     elif action == 'ban': c.execute("UPDATE users SET status='BANNED' WHERE email=%s", (email,))
     elif action == 'unban': c.execute("UPDATE users SET status='ACTIVE' WHERE email=%s", (email,))
+    elif action == 'delete': c.execute("DELETE FROM users WHERE email=%s", (email,)) # Lógica de eliminación
     conn.commit(); conn_pool.putconn(conn); return redirect('/admin')
 
 @app.route('/api/login', methods=['POST'])
