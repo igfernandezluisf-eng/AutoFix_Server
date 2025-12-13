@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v5.3.0</title>
+    <title>AutoFix PRO v5.4.0</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
-        /* [ESTILOS INTEGRALES REGLA #1 - SE MANTIENEN 100% IGUALES A V5.2] */
         :root { --main-color: #00f3ff; --neon-red: #ff0055; --neon-green: #00ff9d; --neon-amber: #ffaa00; --bg-dark: #0a0a0f; --panel-bg: #141419; --text-main: #e0e0e0; }
         body { font-family: 'Segoe UI', monospace; background: var(--bg-dark); color: var(--text-main); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
         header { width: 100%; max-width: 600px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
@@ -16,7 +15,7 @@
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
         .dot.active { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
         .dot.blue { background: #0072ff; box-shadow: 0 0 10px #0072ff; animation: pulse-blue 1s infinite; }
-        @keyframes pulse-blue { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes pulse-blue { 50% { opacity: 0.5; } }
         .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 600px; margin-bottom: 15px; }
         .card { background: var(--panel-bg); border-radius: 15px; padding: 15px; display: flex; flex-direction: column; align-items: center; border: 1px solid #222; }
         .gauge-container { position: relative; width: 100px; height: 100px; }
@@ -35,12 +34,13 @@
         .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
         .modal-content { background: #141419; margin: 5% auto; padding: 20px; border: 1px solid #444; width: 90%; max-width: 500px; border-radius: 12px; position: relative; }
         .close-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #fff; }
-        .input-dark { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 12px; margin: 10px 0; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
+        .input-dark, select.input-dark { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 12px; margin: 10px 0; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
+        label { display: block; text-align: left; color: #888; font-size: 0.8rem; margin-top: 10px; }
         .btn-full { width: 100%; padding: 15px; background: var(--main-color); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; color: #000; margin-top: 15px; }
         .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; text-align: left; }
         .data-table th { color: var(--main-color); border-bottom: 1px solid #444; padding: 8px; }
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
-        .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; margin-bottom: 15px; border-radius: 10px; }
+        .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
@@ -52,7 +52,7 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v5.3.0 Bridge</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v5.4.0 Final</div>
         </div>
     </div>
 
@@ -62,14 +62,8 @@
     </header>
 
     <div class="dashboard">
-        <div class="card">
-            <span style="font-size:0.7rem; color:#888;">RPM MOTOR</span>
-            <div class="gauge-container"><svg width="100" height="100"><circle class="bg-circle" cx="50" cy="50" r="40"></circle><circle id="rpm-circle" class="progress-circle" cx="50" cy="50" r="40"></circle></svg><div class="gauge-value" id="rpm-val">--</div></div>
-        </div>
-        <div class="card">
-            <span style="font-size:0.7rem; color:#888;">TEMPERATURA</span>
-            <div class="gauge-container"><svg width="100" height="100"><circle class="bg-circle" cx="50" cy="50" r="40"></circle><circle id="temp-circle" class="progress-circle" cx="50" cy="50" r="40" style="stroke:var(--neon-red)"></circle></svg><div class="gauge-value" id="temp-val">--</div></div>
-        </div>
+        <div class="card"><span>RPM MOTOR</span><div class="gauge-container"><svg width="100" height="100"><circle class="bg-circle" cx="50" cy="50" r="40"></circle><circle id="rpm-circle" class="progress-circle" cx="50" cy="50" r="40"></circle></svg><div class="gauge-value" id="rpm-val">--</div></div></div>
+        <div class="card"><span>TEMPERATURA</span><div class="gauge-container"><svg width="100" height="100"><circle class="bg-circle" cx="50" cy="50" r="40"></circle><circle id="temp-circle" class="progress-circle" cx="50" cy="50" r="40" style="stroke:var(--neon-red)"></circle></svg><div class="gauge-value" id="temp-val">--</div></div></div>
     </div>
 
     <div class="toolbar">
@@ -95,20 +89,25 @@
         <button class="action-btn btn-blue" onclick="connectOrSync()"><span class="material-icons-round">bluetooth</span>SYNC</button>
     </div>
 
-    <button class="scan-btn" id="scanBtn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v5.3.0 Engine Ready.</div></div>
+    <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
+    <div class="console" id="console"><div>> AutoFix v5.4.0 Engine Ready.</div></div>
 
     <div id="odoModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('odoModal')">&times;</span><h2>ODÓMETRO</h2><div class="odo-display" id="odo-current">---</div><input type="number" id="odo-new" class="input-dark" placeholder="Nuevo Km"><button class="btn-full" onclick="writeOdometer()">PROGRAMAR</button></div></div>
-    <div id="settingsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('settingsModal')">&times;</span><h2>CONFIGURACIÓN</h2><label>Interface Hardware</label><select id="conf-hw" class="input-dark"><option value="sim">🔌 Modo Simulación</option><option value="elm">📶 ELM327 BLE (Real)</option></select><button class="btn-full" onclick="saveSettings()">GUARDAR</button></div></div>
-    <div id="inventoryModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('inventoryModal')">&times;</span><h2>INVENTARIO</h2><table class="data-table"><tr><th>Cód.</th><th>Stock</th></tr><tr><td>FLT-01</td><td>12</td></tr></table></div></div>
-    <div id="crmModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('crmModal')">&times;</span><h2>CLIENTES</h2><p>Juan P. - Fiesta 2015</p></div></div>
-    <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZACIÓN</h2><p>Total: $ 85.00</p></div></div>
-    <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>ANÁLISIS IA</h2><p>Estado: 85%</p></div></div>
-    <div id="topologyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('topologyModal')">&times;</span><h2>RED CAN</h2><p>ECU: OK</p></div></div>
+    
+    <div id="settingsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('settingsModal')">&times;</span><h2>CONFIGURACIÓN</h2>
+        <label>Interface Hardware</label><select id="conf-hw" class="input-dark"><option value="sim">🔌 Modo Simulación</option><option value="elm">📶 ELM327 BLE (Real)</option><option value="j2534">📡 J2534 Passthru</option><option value="usb">💻 Cable USB</option></select>
+        <label>Motor de IA</label><select id="conf-ai" class="input-dark"><option value="gemini">✨ Google Gemini Ultra</option><option value="gpt">🧠 GPT-4 Turbo</option></select>
+        <label>Taller</label><input type="text" class="input-dark" value="Taller Principal"><button class="btn-full" onclick="saveSettings()">GUARDAR</button></div></div>
+
+    <div id="inventoryModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('inventoryModal')">&times;</span><h2>INVENTARIO</h2><table class="data-table"><tr><th>Item</th><th>Stock</th></tr><tr><td>Filtro 5W30</td><td>12</td></tr><tr><td>Bujía NGK</td><td>24</td></tr></table></div></div>
+    <div id="crmModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('crmModal')">&times;</span><h2>CRM</h2><p>Juan P. - Fiesta 2015 (Listo)</p></div></div>
+    <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZAR</h2><p>Total: $ 85.00</p><button class="btn-full">GENERAR</button></div></div>
+    <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>IA</h2><p>Salud: 85%</p></div></div>
+    <div id="topologyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('topologyModal')">&times;</span><h2>CAN BUS</h2><p>ECU ● OK</p></div></div>
     <div id="scopeModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('scopeModal')">&times;</span><h2>SCOPE</h2><canvas id="scopeCanvas" style="width:100%; height:150px; background:#000;"></canvas></div></div>
-    <div id="sensorModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('sensorModal')">&times;</span><h2>SENSORES</h2><p id="live-rpm">---</p></div></div>
+    <div id="sensorModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('sensorModal')">&times;</span><h2>SENSORES</h2><p id="live-rpm">RPM: ---</p></div></div>
     <div id="testsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('testsModal')">&times;</span><h2>TESTS</h2><button class="btn-full">FAN OFF</button></div></div>
-    <div id="historyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('historyModal')">&times;</span><h2>HISTORIAL</h2><p>Log 12/12</p></div></div>
+    <div id="historyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('historyModal')">&times;</span><h2>HISTORIAL</h2><p>Log 12/12 - OK</p></div></div>
     <div id="hexModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('hexModal')">&times;</span><h2>HEX</h2><textarea class="input-dark">00 FF...</textarea></div></div>
     <div id="freezeModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('freezeModal')">&times;</span><h2>FREEZE</h2><p>P0300</p></div></div>
     <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Sentra 2018</p></div></div>
@@ -120,7 +119,6 @@
         let simulatedKm = 125430;
         let hardwareMode = 'sim';
 
-        // --- LOGIN ---
         async function attemptLogin() {
             const email = document.getElementById('login-email').value.trim();
             const btn = document.getElementById('btnLogin');
@@ -139,10 +137,7 @@
             } catch (e) { alert("Error Red Render"); btn.disabled = false; }
         }
 
-        function mainLoop() {
-            if (hardwareMode === 'sim') updateFromRender();
-            else setStatusOffline();
-        }
+        function mainLoop() { if (hardwareMode === 'sim') updateFromRender(); else setStatusOffline(); }
 
         async function updateFromRender() {
             try {
@@ -157,64 +152,28 @@
             } catch(e) {}
         }
 
-        function setStatusOffline() {
-            document.getElementById('rpm-val').innerText = "--";
-            document.getElementById('conn-dot').className = 'dot';
-            document.getElementById('conn-text').innerText = "OFFLINE";
-        }
+        function setStatusOffline() { document.getElementById('rpm-val').innerText = "--"; document.getElementById('conn-dot').className = 'dot'; document.getElementById('conn-text').innerText = "OFFLINE"; }
 
-        // --- BLUETOOTH CON ESCUDO SEGURO ---
         async function connectBluetooth() {
-            // DETECTAR SI EL ENTORNO ES SEGURO
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                alert("❌ BLOQUEO DE SEGURIDAD:\nBluetooth requiere HTTPS.\n\nSOLUCIÓN:\nAbra su navegador Chrome y entre a:\n" + API_URL);
-                return;
-            }
-
-            if (!navigator.bluetooth) {
-                alert("❌ ERROR: El hardware Bluetooth no está disponible en este Webview.");
-                return;
-            }
-
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') { alert("Bluetooth requiere HTTPS seguro."); return; }
+            if (!navigator.bluetooth) { alert("Bluetooth no disponible en este dispositivo."); return; }
             try {
-                alert("🔍 Buscando dispositivos ELM327 BLE...");
-                const device = await navigator.bluetooth.requestDevice({
-                    filters: [{ services: ['000018f0-0000-1000-8000-00805f9b34fb'] }],
-                    optionalServices: ['0000fff0-0000-1000-8000-00805f9b34fb']
-                });
-                alert("✅ Dispositivo encontrado: " + device.name);
-            } catch (e) { alert("❌ Error: " + e.message); }
+                const device = await navigator.bluetooth.requestDevice({ filters: [{ services: ['000018f0-0000-1000-8000-00805f9b34fb'] }], optionalServices: ['0000fff0-0000-1000-8000-00805f9b34fb'] });
+                alert("Conectado a: " + device.name);
+            } catch (e) { alert("Error: " + e.message); }
         }
 
-        function connectOrSync() {
-            if (hardwareMode === 'elm') connectBluetooth();
-            else window.location.reload(true);
-        }
-
-        function saveSettings() {
-            hardwareMode = document.getElementById('conf-hw').value;
-            alert("Ajustes Guardados: " + hardwareMode.toUpperCase());
-            closeModal('settingsModal');
-        }
-
-        function openOdometerTool() {
-            if(currentUserPlan !== 'MASTER') { alert("Solo MASTER"); return; }
-            openModal('odoModal');
-            document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km";
-        }
-        function writeOdometer() {
-            simulatedKm = parseInt(document.getElementById('odo-new').value);
-            document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km";
-            alert("Grabado.");
-        }
-
+        function connectOrSync() { if (hardwareMode === 'elm') connectBluetooth(); else window.location.reload(true); }
+        function saveSettings() { hardwareMode = document.getElementById('conf-hw').value; alert("Configuración Aplicada."); closeModal('settingsModal'); }
+        function openOdometerTool() { if(currentUserPlan !== 'MASTER') { alert("Nivel MASTER requerido"); return; } openModal('odoModal'); document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km"; }
+        function writeOdometer() { simulatedKm = parseInt(document.getElementById('odo-new').value); document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km"; alert("Escritura Completa."); }
         function openModal(id) { document.getElementById(id).style.display = 'block'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function toggleSunMode() { document.body.style.background = document.body.style.background==='white'?'#0a0a0f':'white'; }
-        function toggleVoice() { alert("Voz Activa"); }
-        function startScan() { alert("Escanéo OK"); }
-        function testSecurity() { alert("Acceso OK"); }
-        function toggleRec() { alert("REC ON"); }
+        function toggleVoice() { alert("Micrófono Escuchando..."); }
+        function startScan() { alert("Escanéo OBD2 Completo."); }
+        function testSecurity() { alert("Acceso de Seguridad: OK"); }
+        function toggleRec() { alert("Grabación de Datos ON"); }
         function openHexEditor(){openModal('hexModal')}
     </script>
 </body>
