@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v5.5.1 (FIX TEMP)</title>
+    <title>AutoFix PRO v6.0.0 (APK)</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root { --main-color: #00f3ff; --neon-red: #ff0055; --neon-green: #00ff9d; --neon-amber: #ffaa00; --bg-dark: #0a0a0f; --panel-bg: #141419; --text-main: #e0e0e0; }
@@ -52,12 +52,12 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v5.5.1 (FIX TEMP)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.0.0 (APK)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v5.5.1</span></div>
+        <div class="brand">AutoFix <span>PRO v6.0.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -90,7 +90,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v5.5.1 Engine Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.0.0 APK Ready.</div></div>
 
     <div id="odoModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('odoModal')">&times;</span><h2>ODÓMETRO</h2><div class="odo-display" id="odo-current">---</div><input type="number" id="odo-new" class="input-dark" placeholder="Nuevo Km"><button class="btn-full" onclick="writeOdometer()">PROGRAMAR</button></div></div>
     
@@ -154,14 +154,14 @@
 
         function setStatusOffline() { 
             // ============================================
-            // CORRECCIÓN CONFIRMADA v5.5.1 - RESETEO TOTAL
+            // CORRECCIÓN CONFIRMADA v6.0.0 - RESETEO TOTAL
             // ============================================
             
             // 1. Reset RPM
             document.getElementById('rpm-val').innerText = "--"; 
             document.getElementById('rpm-circle').style.strokeDashoffset = 251; 
             
-            // 2. Reset Temperatura (Antes se quedaba congelada)
+            // 2. Reset Temperatura
             document.getElementById('temp-val').innerText = "--"; 
             document.getElementById('temp-circle').style.strokeDashoffset = 251; 
 
