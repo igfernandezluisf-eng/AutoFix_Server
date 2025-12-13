@@ -152,7 +152,18 @@
             } catch(e) {}
         }
 
-        function setStatusOffline() { document.getElementById('rpm-val').innerText = "--"; document.getElementById('conn-dot').className = 'dot'; document.getElementById('conn-text').innerText = "OFFLINE"; }
+        function setStatusOffline() { 
+            // Reset RPM
+            document.getElementById('rpm-val').innerText = "--"; 
+            document.getElementById('rpm-circle').style.strokeDashoffset = 251; // Reset Visual Círculo RPM
+            
+            // Reset Temperatura (FIX SOLICITADO)
+            document.getElementById('temp-val').innerText = "--"; 
+            document.getElementById('temp-circle').style.strokeDashoffset = 251; // Reset Visual Círculo Temp
+
+            document.getElementById('conn-dot').className = 'dot'; 
+            document.getElementById('conn-text').innerText = "OFFLINE"; 
+        }
 
         async function connectBluetooth() {
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') { alert("Bluetooth requiere HTTPS seguro."); return; }
