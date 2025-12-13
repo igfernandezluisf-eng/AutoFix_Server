@@ -1,6 +1,6 @@
 # ==============================================================================
 # PROYECTO: AutoFix Server (Backend)
-# MÓDULO:   Restauración Admin Total (v5.5.0 - Delete Added)
+# MÓDULO:   Restauración Admin Total (v6.0.0 - APK Architecture)
 # REGLA DE ORO: INTEGRIDAD TOTAL - PROHIBIDO SIMPLIFICAR
 # ==============================================================================
 
@@ -60,7 +60,7 @@ DASHBOARD_HTML = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoFix CONTROL TOWER v5.5</title>
+    <title>AutoFix CONTROL TOWER v6.0</title>
     <style>
         body { background-color: #0d1117; color: #c9d1d9; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
         .navbar { width: 100%; background: #161b22; border-bottom: 1px solid #30363d; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
@@ -92,7 +92,7 @@ DASHBOARD_HTML = """
     </div>
     {% else %}
     <div class="navbar">
-        <div style="font-size: 1.5rem; font-weight: bold;">AutoFix <span>TOWER v5.5</span></div>
+        <div style="font-size: 1.5rem; font-weight: bold;">AutoFix <span>TOWER v6.0</span></div>
         <a href="/admin/logout" style="color: #f85149; text-decoration: none; font-weight: bold;">Cerrar Sesión</a>
     </div>
     <div class="container">
