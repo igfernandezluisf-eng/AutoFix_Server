@@ -155,11 +155,11 @@
         function setStatusOffline() { 
             // Reset RPM
             document.getElementById('rpm-val').innerText = "--"; 
-            document.getElementById('rpm-circle').style.strokeDashoffset = 251; // Reset Visual Círculo RPM
+            document.getElementById('rpm-circle').style.strokeDashoffset = 251; // 251 = Círculo Vacío
             
-            // Reset Temperatura (FIX SOLICITADO)
+            // Reset Temperatura (CORREGIDO)
             document.getElementById('temp-val').innerText = "--"; 
-            document.getElementById('temp-circle').style.strokeDashoffset = 251; // Reset Visual Círculo Temp
+            document.getElementById('temp-circle').style.strokeDashoffset = 251; // 251 = Círculo Vacío
 
             document.getElementById('conn-dot').className = 'dot'; 
             document.getElementById('conn-text').innerText = "OFFLINE"; 
