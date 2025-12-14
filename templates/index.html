@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.0.0 (APK)</title>
+    <title>AutoFix PRO v6.0.3 (FORCE MODE)</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root { --main-color: #00f3ff; --neon-red: #ff0055; --neon-green: #00ff9d; --neon-amber: #ffaa00; --bg-dark: #0a0a0f; --panel-bg: #141419; --text-main: #e0e0e0; }
@@ -52,12 +52,12 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.0.0 (APK)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.0.3 (FORCE MODE)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v6.0.0</span></div>
+        <div class="brand">AutoFix <span>PRO v6.0.3</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -90,7 +90,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.0.0 APK Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.0.3 FORCE Ready.</div></div>
 
     <div id="odoModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('odoModal')">&times;</span><h2>ODÓMETRO</h2><div class="odo-display" id="odo-current">---</div><input type="number" id="odo-new" class="input-dark" placeholder="Nuevo Km"><button class="btn-full" onclick="writeOdometer()">PROGRAMAR</button></div></div>
     
@@ -153,30 +153,42 @@
         }
 
         function setStatusOffline() { 
-            // ============================================
-            // CORRECCIÓN CONFIRMADA v6.0.0 - RESETEO TOTAL
-            // ============================================
-            
-            // 1. Reset RPM
             document.getElementById('rpm-val').innerText = "--"; 
             document.getElementById('rpm-circle').style.strokeDashoffset = 251; 
-            
-            // 2. Reset Temperatura
             document.getElementById('temp-val').innerText = "--"; 
             document.getElementById('temp-circle').style.strokeDashoffset = 251; 
-
-            // 3. Reset Estado
             document.getElementById('conn-dot').className = 'dot'; 
             document.getElementById('conn-text').innerText = "OFFLINE"; 
         }
 
         async function connectBluetooth() {
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost') { alert("Bluetooth requiere HTTPS seguro."); return; }
-            if (!navigator.bluetooth) { alert("Bluetooth no disponible en este dispositivo."); return; }
+            // =============================================================
+            // v6.0.3: MODO FORZADO (SIN VERIFICACIONES PREVIAS)
+            // =============================================================
+            // Se han eliminado todos los 'if' y 'return'.
+            // El código intenta conectar "a la fuerza".
+            
             try {
-                const device = await navigator.bluetooth.requestDevice({ filters: [{ services: ['000018f0-0000-1000-8000-00805f9b34fb'] }], optionalServices: ['0000fff0-0000-1000-8000-00805f9b34fb'] });
-                alert("Conectado a: " + device.name);
-            } catch (e) { alert("Error: " + e.message); }
+                alert("Iniciando Escáner Bluetooth...");
+                
+                // Intento de conexión DIRECTA sin verificar compatibilidad
+                const device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true,
+                    optionalServices: [
+                        '000018f0-0000-1000-8000-00805f9b34fb', 
+                        '0000fff0-0000-1000-8000-00805f9b34fb', 
+                        'generic_access'
+                    ]
+                });
+
+                alert("Dispositivo Encontrado: " + device.name + "\nConectando...");
+                document.getElementById('conn-text').innerText = "BLE: " + device.name;
+                document.getElementById('conn-dot').className = 'dot blue';
+                
+            } catch (e) { 
+                // Si entra aquí, es la prueba DEFINITIVA de que la App no soporta BLE
+                alert("ERROR DE CONEXIÓN:\n" + e.message + "\n\nSi el error dice 'undefined' o 'navigator.bluetooth', significa que WebIntoApp ha eliminado el soporte Bluetooth en la versión gratuita."); 
+            }
         }
 
         function connectOrSync() { if (hardwareMode === 'elm') connectBluetooth(); else window.location.reload(true); }
