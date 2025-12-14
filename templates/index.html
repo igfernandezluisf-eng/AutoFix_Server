@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.1.0</title>
+    <title>AutoFix PRO v6.1.1</title>
+    
+    <link rel="manifest" href="/manifest.json">
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,7 +59,7 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.1.0 (PWA STABLE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.1.1 (PWA READY)</div>
         </div>
     </div>
 
@@ -95,7 +97,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.1.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.1.1 Ready.</div></div>
 
     <div id="odoModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('odoModal')">&times;</span><h2>ODÓMETRO</h2><div class="odo-display" id="odo-current">---</div><input type="number" id="odo-new" class="input-dark" placeholder="Nuevo Km"><button class="btn-full" onclick="writeOdometer()">PROGRAMAR</button></div></div>
     
@@ -167,7 +169,6 @@
         }
 
         async function connectBluetooth() {
-            // VERIFICACIÓN Y CONEXIÓN REAL (Soportada por Chrome)
             if (!navigator.bluetooth) { 
                 alert("AVISO: Para conectar el Scanner, debes usar Google Chrome en Android. La APK generada no soporta esta función."); 
                 return; 
