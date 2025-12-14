@@ -1,10 +1,10 @@
 # ==============================================================================
 # PROYECTO: AutoFix Server (Backend)
-# MÓDULO:   Restauración Admin Total (v6.0.0 - APK Architecture)
-# REGLA DE ORO: INTEGRIDAD TOTAL - PROHIBIDO SIMPLIFICAR
+# MÓDULO:   v6.1.0 (PWA Support Enabled)
+# REGLA DE ORO: INTEGRIDAD TOTAL
 # ==============================================================================
 
-from flask import Flask, request, jsonify, render_template, render_template_string, redirect, url_for, session
+from flask import Flask, request, jsonify, render_template, render_template_string, redirect, url_for, session, send_from_directory
 from flask_cors import CORS
 import psycopg2
 from psycopg2 import pool
@@ -14,7 +14,8 @@ import math
 import os
 import sys
 
-app = Flask(__name__)
+# Se define que la carpeta de templates es la raíz '.' para evitar errores de carpetas
+app = Flask(__name__, template_folder='templates') 
 app.secret_key = "AUTOFIX_SUPER_SECRET_KEY_2025"
 CORS(app) 
 
@@ -48,19 +49,24 @@ init_db()
 
 def get_db_connection(): return conn_pool.getconn()
 
-# --- RUTA FRONTEND (Para Bluetooth HTTPS) ---
+# --- RUTA PARA SERVIR MANIFEST.JSON (SIN CARPETAS EXTRA) ---
+@app.route('/manifest.json')
+def serve_manifest():
+    return send_from_directory('.', 'manifest.json', mimetype='application/json')
+
+# --- RUTA FRONTEND ---
 @app.route('/')
 def serve_frontend():
     return render_template('index.html')
 
-# --- DASHBOARD ADMIN RESTAURADO AL 100% ---
+# --- DASHBOARD ADMIN ---
 DASHBOARD_HTML = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoFix CONTROL TOWER v6.0</title>
+    <title>AutoFix CONTROL TOWER v6.1</title>
     <style>
         body { background-color: #0d1117; color: #c9d1d9; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
         .navbar { width: 100%; background: #161b22; border-bottom: 1px solid #30363d; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
@@ -92,7 +98,7 @@ DASHBOARD_HTML = """
     </div>
     {% else %}
     <div class="navbar">
-        <div style="font-size: 1.5rem; font-weight: bold;">AutoFix <span>TOWER v6.0</span></div>
+        <div style="font-size: 1.5rem; font-weight: bold;">AutoFix <span>TOWER v6.1</span></div>
         <a href="/admin/logout" style="color: #f85149; text-decoration: none; font-weight: bold;">Cerrar Sesión</a>
     </div>
     <div class="container">
@@ -183,7 +189,7 @@ def update_user():
     elif action == 'set_master': c.execute("UPDATE users SET plan='MASTER' WHERE email=%s", (email,))
     elif action == 'ban': c.execute("UPDATE users SET status='BANNED' WHERE email=%s", (email,))
     elif action == 'unban': c.execute("UPDATE users SET status='ACTIVE' WHERE email=%s", (email,))
-    elif action == 'delete': c.execute("DELETE FROM users WHERE email=%s", (email,)) # Lógica de eliminación
+    elif action == 'delete': c.execute("DELETE FROM users WHERE email=%s", (email,))
     conn.commit(); conn_pool.putconn(conn); return redirect('/admin')
 
 @app.route('/api/login', methods=['POST'])
