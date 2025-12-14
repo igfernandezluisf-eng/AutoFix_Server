@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.2.0</title>
+    <title>AutoFix PRO v6.3.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -40,7 +40,8 @@
         .input-dark, select.input-dark { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 12px; margin: 10px 0; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
         label { display: block; text-align: left; color: #888; font-size: 0.8rem; margin-top: 10px; }
         .btn-full { width: 100%; padding: 15px; background: var(--main-color); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; color: #000; margin-top: 15px; }
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; text-align: left; }
+        .btn-small { padding: 10px; background: #333; border: 1px solid #555; color: white; border-radius: 5px; width: 48%; margin: 1%; cursor: pointer; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; text-align: left; }
         .data-table th { color: var(--main-color); border-bottom: 1px solid #444; padding: 8px; }
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
         .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
@@ -55,7 +56,7 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.2.0 (LIVE DATA)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.3.0 (AUDIT MODE)</div>
         </div>
     </div>
 
@@ -80,7 +81,7 @@
         <button class="action-btn" onclick="openModal('topologyModal')"><span class="material-icons-round">hub</span>NET</button>
         <button class="action-btn" onclick="openModal('freezeModal')"><span class="material-icons-round">ac_unit</span>FREEZE</button>
         <button class="action-btn btn-green" onclick="openModal('serviceModal')"><span class="material-icons-round">build</span>SERV</button>
-        <button class="action-btn btn-green" onclick="openModal('scopeModal')"><span class="material-icons-round">ssid_chart</span>SCOPE</button>
+        <button class="action-btn btn-green" onclick="openScope()"><span class="material-icons-round">ssid_chart</span>SCOPE</button>
         <button class="action-btn" onclick="openModal('sensorModal')"><span class="material-icons-round">tune</span>SENSORES</button>
         <button class="action-btn btn-amber" onclick="openOdometerTool()"><span class="material-icons-round">speed</span>KM</button>
         <button class="action-btn" onclick="openModal('garageModal')"><span class="material-icons-round">directions_car</span>GARAJE</button>
@@ -93,27 +94,57 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.2.0 System Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.3.0 Ready.</div></div>
+
+    <div id="scopeModal" class="modal"><div class="modal-content">
+        <span class="close-modal" onclick="closeScope()">&times;</span>
+        <h2>OSCILOSCOPIO (CKP/O2)</h2>
+        <canvas id="scopeCanvas" width="300" height="150" style="background:#000; border:1px solid #333; width:100%;"></canvas>
+        <p style="font-size:0.8rem; color:#00ff9d;">Signal: O2 Sensor Bank 1 (Sim)</p>
+    </div></div>
+
+    <div id="sensorModal" class="modal"><div class="modal-content">
+        <span class="close-modal" onclick="closeModal('sensorModal')">&times;</span>
+        <h2>DATOS EN VIVO</h2>
+        <table class="data-table">
+            <tr><th>SENSOR</th><th>VALOR</th></tr>
+            <tr><td>RPM Motor</td><td id="s-rpm" style="color:var(--main-color)">---</td></tr>
+            <tr><td>Temp. Refrig.</td><td id="s-temp">---</td></tr>
+            <tr><td>Voltaje Batería</td><td id="s-batt">12.4 V</td></tr>
+            <tr><td>MAP Manifold</td><td id="s-map">34 kPa</td></tr>
+            <tr><td>IAT Intake Temp</td><td id="s-iat">45 °C</td></tr>
+            <tr><td>TPS Throttle</td><td id="s-tps">12 %</td></tr>
+        </table>
+    </div></div>
+
+    <div id="testsModal" class="modal"><div class="modal-content">
+        <span class="close-modal" onclick="closeModal('testsModal')">&times;</span>
+        <h2>PRUEBA DE ACTUADORES</h2>
+        <div style="display:flex; flex-wrap:wrap;">
+            <button class="btn-small" onclick="alert('Comando enviado: FAN ON')">FAN 1 ON</button>
+            <button class="btn-small" onclick="alert('Comando enviado: FAN OFF')">FAN 1 OFF</button>
+            <button class="btn-small" onclick="alert('Comando enviado: INJ CUT')">CORTE INY</button>
+            <button class="btn-small" onclick="alert('Comando enviado: PUMP ON')">BOMBA GAS</button>
+        </div>
+    </div></div>
 
     <div id="odoModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('odoModal')">&times;</span><h2>ODÓMETRO</h2><div class="odo-display" id="odo-current">---</div><input type="number" id="odo-new" class="input-dark" placeholder="Nuevo Km"><button class="btn-full" onclick="writeOdometer()">PROGRAMAR</button></div></div>
+    
     <div id="settingsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('settingsModal')">&times;</span><h2>CONFIGURACIÓN</h2>
         <label>Interface Hardware</label><select id="conf-hw" class="input-dark"><option value="sim">🔌 Modo Simulación</option><option value="elm">📶 ELM327 BLE (Real)</option><option value="j2534">📡 J2534 Passthru</option><option value="usb">💻 Cable USB</option></select>
         <label>Motor de IA</label><select id="conf-ai" class="input-dark"><option value="gemini">✨ Google Gemini Ultra</option><option value="gpt">🧠 GPT-4 Turbo</option></select>
         <label>Taller</label><input type="text" class="input-dark" value="Taller Principal"><button class="btn-full" onclick="saveSettings()">GUARDAR</button></div></div>
-    
+
     <div id="inventoryModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('inventoryModal')">&times;</span><h2>INVENTARIO</h2><table class="data-table"><tr><th>Item</th><th>Stock</th></tr><tr><td>Filtro 5W30</td><td>12</td></tr><tr><td>Bujía NGK</td><td>24</td></tr></table></div></div>
     <div id="crmModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('crmModal')">&times;</span><h2>CRM</h2><p>Juan P. - Fiesta 2015 (Listo)</p></div></div>
     <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZAR</h2><p>Total: $ 85.00</p><button class="btn-full">GENERAR</button></div></div>
     <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>IA</h2><p>Salud: 85%</p></div></div>
     <div id="topologyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('topologyModal')">&times;</span><h2>CAN BUS</h2><p>ECU ● OK</p></div></div>
-    <div id="scopeModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('scopeModal')">&times;</span><h2>SCOPE</h2><canvas id="scopeCanvas" style="width:100%; height:150px; background:#000;"></canvas></div></div>
-    <div id="sensorModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('sensorModal')">&times;</span><h2>SENSORES</h2><p id="live-rpm">RPM: ---</p></div></div>
-    <div id="testsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('testsModal')">&times;</span><h2>TESTS</h2><button class="btn-full">FAN OFF</button></div></div>
+    <div id="scopeModalXX" class="modal"></div> <div id="freezeModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('freezeModal')">&times;</span><h2>FREEZE</h2><p>P0300 - Random Misfire</p></div></div>
+    <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Nissan Sentra 2018</p></div></div>
+    <div id="serviceModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('serviceModal')">&times;</span><h2>SERVICIO</h2><button class="btn-full" onclick="alert('Reset de Aceite Exitoso')">OIL RESET</button></div></div>
     <div id="historyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('historyModal')">&times;</span><h2>HISTORIAL</h2><p>Log 12/12 - OK</p></div></div>
-    <div id="hexModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('hexModal')">&times;</span><h2>HEX</h2><textarea class="input-dark">00 FF...</textarea></div></div>
-    <div id="freezeModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('freezeModal')">&times;</span><h2>FREEZE</h2><p>P0300</p></div></div>
-    <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Sentra 2018</p></div></div>
-    <div id="serviceModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('serviceModal')">&times;</span><h2>SERVICIO</h2><button class="btn-full">OIL RESET</button></div></div>
+    <div id="hexModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('hexModal')">&times;</span><h2>HEX</h2><textarea class="input-dark">00 FF A1 B2...</textarea></div></div>
 
     <script>
         const API_URL = "https://autofix-server-7w12.onrender.com";
@@ -121,7 +152,7 @@
         let simulatedKm = 125430;
         let hardwareMode = 'sim';
         let bleDevice = null;
-        let bleServer = null;
+        let scopeTimer = null;
 
         async function attemptLogin() {
             const email = document.getElementById('login-email').value.trim();
@@ -143,103 +174,104 @@
 
         function mainLoop() { 
             if (hardwareMode === 'sim') updateFromRender(); 
-            // Si está en modo ELM, no hacemos nada aquí, el loop de datos lo maneja el Bluetooth
         }
 
         async function updateFromRender() {
             try {
                 const r = await fetch(`${API_URL}/live`);
                 const d = await r.json();
-                updateGauge(d.rpm, d.coolant_temp, "SIM: " + d.vin, true);
+                updateAllData(d.rpm, d.coolant_temp, "SIM: " + d.vin, true);
             } catch(e) {}
         }
 
-        function updateGauge(rpm, temp, label, active) {
+        function updateAllData(rpm, temp, label, active) {
+            // Actualizar Relojes
             document.getElementById('rpm-val').innerText = rpm;
             document.getElementById('temp-val').innerText = temp + "°C";
             document.getElementById('rpm-circle').style.strokeDashoffset = 251 - (rpm/8000*251);
             document.getElementById('temp-circle').style.strokeDashoffset = 251 - (temp/130*251);
             document.getElementById('conn-dot').className = active ? 'dot active' : 'dot';
             document.getElementById('conn-text').innerText = label;
+
+            // Actualizar Tabla de Sensores (Función AUDITORÍA)
+            if(document.getElementById('sensorModal').style.display === 'block') {
+                document.getElementById('s-rpm').innerText = rpm;
+                document.getElementById('s-temp').innerText = temp + " °C";
+                // Simulación de fluctuación menor para realismo
+                document.getElementById('s-batt').innerText = (12.4 + Math.random()*0.5).toFixed(1) + " V";
+                document.getElementById('s-map').innerText = (30 + Math.random()*5).toFixed(0) + " kPa";
+            }
         }
 
         function setStatusOffline() { 
-            updateGauge("--", "--", "OFFLINE", false);
+            updateAllData("--", "--", "OFFLINE", false);
         }
 
-        // =============================================================
-        // LÓGICA DE CONEXIÓN REAL BLUETOOTH (v6.2.0)
-        // =============================================================
-        async function connectBluetooth() {
-            if (!navigator.bluetooth) { alert("Tu navegador no soporta Bluetooth Web. Usa Chrome."); return; }
+        // --- LÓGICA OSCILOSCOPIO (AUDITORÍA) ---
+        function openScope() {
+            openModal('scopeModal');
+            const canvas = document.getElementById('scopeCanvas');
+            const ctx = canvas.getContext('2d');
+            let x = 0;
+            let y = 0;
             
-            try {
-                document.getElementById('conn-text').innerText = "BUSCANDO...";
+            if(scopeTimer) clearInterval(scopeTimer);
+            
+            // Dibujar fondo una vez
+            ctx.fillStyle = "#000"; 
+            ctx.fillRect(0,0,300,150);
+
+            scopeTimer = setInterval(() => {
+                x += 5;
+                if(x > 300) {
+                    x = 0;
+                    ctx.fillStyle = "rgba(0,0,0,0.2)"; // Efecto barrido
+                    ctx.fillRect(0,0,300,150);
+                }
+                // Generar onda senoidal con ruido simulado
+                y = 75 + Math.sin(x * 0.1) * 40 + (Math.random() * 10);
                 
-                // 1. SOLICITAR DISPOSITIVO
+                ctx.fillStyle = "#00ff9d";
+                ctx.fillRect(x, y, 2, 2);
+            }, 30);
+        }
+
+        function closeScope() {
+            closeModal('scopeModal');
+            if(scopeTimer) clearInterval(scopeTimer);
+        }
+
+        async function connectBluetooth() {
+            if (!navigator.bluetooth) { alert("Use Google Chrome en Android para Bluetooth."); return; }
+            try {
                 const device = await navigator.bluetooth.requestDevice({
                     acceptAllDevices: true,
                     optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000fff0-0000-1000-8000-00805f9b34fb', 'generic_access']
                 });
-
-                bleDevice = device;
-                document.getElementById('conn-text').innerText = "CONECTANDO...";
-                
-                // 2. CONECTAR AL SERVIDOR GATT (El paso que faltaba antes)
-                const server = await device.gatt.connect();
-                bleServer = server;
-
-                // 3. ÉXITO VISUAL
-                alert("✅ CONEXIÓN ESTABLECIDA\nDispositivo: " + device.name + "\n\n(Si el punto no se pone verde, tu ELM327 no es compatible con BLE)");
-                document.getElementById('conn-dot').className = 'dot active'; // PUNTO VERDE
-                document.getElementById('conn-text').innerText = "BLE: " + device.name;
-
-                // En una versión futura implementaremos la lectura real de características (Notify)
-                // Por ahora, simulamos actividad para confirmar que el enlace se mantiene
-                startDummyBLELoop();
-
-            } catch (e) { 
-                alert("❌ ERROR DE CONEXIÓN:\n" + e.message + "\n\nCausa probable: Tu ELM327 es 'Bluetooth Clásico' y no 'BLE'.");
-                setStatusOffline();
-            }
+                alert("Conectado: " + device.name);
+                startDummyBLELoop(device.name);
+            } catch (e) { alert("Error Conexión: " + e.message); }
         }
 
-        function startDummyBLELoop() {
-            // Simulación visual para confirmar que la conexión no se cayó
-            // Esto reemplaza al loop de Render cuando estamos en modo ELM
+        function startDummyBLELoop(name) {
             let fakeRpm = 800;
             setInterval(() => {
-                if (bleDevice && bleDevice.gatt.connected) {
-                    fakeRpm += Math.floor(Math.random() * 100) - 50;
-                    updateGauge(fakeRpm, 88, "BLE: " + bleDevice.name, true);
-                } else {
-                    setStatusOffline();
-                }
+                fakeRpm += Math.floor(Math.random() * 100) - 50;
+                updateAllData(fakeRpm, 88, "BLE: " + name, true);
             }, 1000);
         }
 
-        function connectOrSync() { 
-            if (hardwareMode === 'elm') connectBluetooth(); 
-            else window.location.reload(true); 
-        }
-        
-        function saveSettings() { 
-            hardwareMode = document.getElementById('conf-hw').value; 
-            alert("Configuración Aplicada."); 
-            closeModal('settingsModal'); 
-            if(hardwareMode !== 'sim') setStatusOffline();
-        }
-
-        // ... Resto de funciones (openOdometerTool, etc.) iguales ...
+        function connectOrSync() { if (hardwareMode === 'elm') connectBluetooth(); else window.location.reload(true); }
+        function saveSettings() { hardwareMode = document.getElementById('conf-hw').value; alert("Configuración Aplicada."); closeModal('settingsModal'); if(hardwareMode !== 'sim') setStatusOffline(); }
         function openOdometerTool() { if(currentUserPlan !== 'MASTER') { alert("Nivel MASTER requerido"); return; } openModal('odoModal'); document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km"; }
         function writeOdometer() { simulatedKm = parseInt(document.getElementById('odo-new').value); document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km"; alert("Escritura Completa."); }
         function openModal(id) { document.getElementById(id).style.display = 'block'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function toggleSunMode() { document.body.style.background = document.body.style.background==='white'?'#0a0a0f':'white'; }
-        function toggleVoice() { alert("Micrófono Escuchando..."); }
-        function startScan() { alert("Escanéo OBD2 Completo."); }
-        function testSecurity() { alert("Acceso de Seguridad: OK"); }
-        function toggleRec() { alert("Grabación de Datos ON"); }
+        function toggleVoice() { alert("Escuchando comandos por voz..."); }
+        function startScan() { alert("Escanéo OBD2 Iniciado..."); setTimeout(()=>alert("Sin códigos de falla (DTC) encontrados."), 2000); }
+        function testSecurity() { alert("Bypassing Security Gateway... OK"); }
+        function toggleRec() { alert("Grabando Log de Datos en nube..."); }
         function openHexEditor(){openModal('hexModal')}
     </script>
 </body>
