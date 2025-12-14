@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.0.3 (FORCE MODE)</title>
+    <title>AutoFix PRO v6.1.0</title>
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0f">
+    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root { --main-color: #00f3ff; --neon-red: #ff0055; --neon-green: #00ff9d; --neon-amber: #ffaa00; --bg-dark: #0a0a0f; --panel-bg: #141419; --text-main: #e0e0e0; }
-        body { font-family: 'Segoe UI', monospace; background: var(--bg-dark); color: var(--text-main); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', monospace; background: var(--bg-dark); color: var(--text-main); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; user-select: none; }
         header { width: 100%; max-width: 600px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .brand { font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; }
         .brand span { color: var(--main-color); }
@@ -52,12 +57,12 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.0.3 (FORCE MODE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.1.0 (PWA STABLE)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v6.0.3</span></div>
+        <div class="brand">AutoFix <span>PRO</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -90,7 +95,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.0.3 FORCE Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.1.0 Ready.</div></div>
 
     <div id="odoModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('odoModal')">&times;</span><h2>ODÓMETRO</h2><div class="odo-display" id="odo-current">---</div><input type="number" id="odo-new" class="input-dark" placeholder="Nuevo Km"><button class="btn-full" onclick="writeOdometer()">PROGRAMAR</button></div></div>
     
@@ -162,16 +167,12 @@
         }
 
         async function connectBluetooth() {
-            // =============================================================
-            // v6.0.3: MODO FORZADO (SIN VERIFICACIONES PREVIAS)
-            // =============================================================
-            // Se han eliminado todos los 'if' y 'return'.
-            // El código intenta conectar "a la fuerza".
-            
+            // VERIFICACIÓN Y CONEXIÓN REAL (Soportada por Chrome)
+            if (!navigator.bluetooth) { 
+                alert("AVISO: Para conectar el Scanner, debes usar Google Chrome en Android. La APK generada no soporta esta función."); 
+                return; 
+            }
             try {
-                alert("Iniciando Escáner Bluetooth...");
-                
-                // Intento de conexión DIRECTA sin verificar compatibilidad
                 const device = await navigator.bluetooth.requestDevice({
                     acceptAllDevices: true,
                     optionalServices: [
@@ -180,15 +181,10 @@
                         'generic_access'
                     ]
                 });
-
-                alert("Dispositivo Encontrado: " + device.name + "\nConectando...");
+                alert("Conectado a: " + device.name);
                 document.getElementById('conn-text').innerText = "BLE: " + device.name;
                 document.getElementById('conn-dot').className = 'dot blue';
-                
-            } catch (e) { 
-                // Si entra aquí, es la prueba DEFINITIVA de que la App no soporta BLE
-                alert("ERROR DE CONEXIÓN:\n" + e.message + "\n\nSi el error dice 'undefined' o 'navigator.bluetooth', significa que WebIntoApp ha eliminado el soporte Bluetooth en la versión gratuita."); 
-            }
+            } catch (e) { alert("Error: " + e.message); }
         }
 
         function connectOrSync() { if (hardwareMode === 'elm') connectBluetooth(); else window.location.reload(true); }
