@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.3.0</title>
+    <title>AutoFix PRO v6.3.1</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -56,7 +56,7 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.3.0 (AUDIT MODE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.3.1 (MULTI-SCOPE)</div>
         </div>
     </div>
 
@@ -94,13 +94,27 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.3.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.3.1 Ready.</div></div>
 
     <div id="scopeModal" class="modal"><div class="modal-content">
         <span class="close-modal" onclick="closeScope()">&times;</span>
-        <h2>OSCILOSCOPIO (CKP/O2)</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h2>OSCILOSCOPIO</h2>
+            <select id="scopeSensor" class="input-dark" style="width:160px; margin:0; padding:5px; font-size:0.9rem;" onchange="resetScope()">
+                <option value="O2">O2 - Oxígeno</option>
+                <option value="CKP">CKP - Cigüeñal</option>
+                <option value="CMP">CMP - Levas</option>
+                <option value="MAF">MAF - Flujo Aire</option>
+                <option value="TPS">TPS - Acelerador</option>
+                <option value="MAP">MAP - Presión</option>
+                <option value="KS">KS - Detonación</option>
+                <option value="ABS">ABS - Rueda</option>
+                <option value="INJ">INJ - Inyectores</option>
+                <option value="IG">IG - Bobina 1º</option>
+            </select>
+        </div>
         <canvas id="scopeCanvas" width="300" height="150" style="background:#000; border:1px solid #333; width:100%;"></canvas>
-        <p style="font-size:0.8rem; color:#00ff9d;">Signal: O2 Sensor Bank 1 (Sim)</p>
+        <p style="font-size:0.8rem; color:#00ff9d;" id="scopeLabel">Analizando Señal...</p>
     </div></div>
 
     <div id="sensorModal" class="modal"><div class="modal-content">
@@ -185,7 +199,6 @@
         }
 
         function updateAllData(rpm, temp, label, active) {
-            // Actualizar Relojes
             document.getElementById('rpm-val').innerText = rpm;
             document.getElementById('temp-val').innerText = temp + "°C";
             document.getElementById('rpm-circle').style.strokeDashoffset = 251 - (rpm/8000*251);
@@ -193,11 +206,9 @@
             document.getElementById('conn-dot').className = active ? 'dot active' : 'dot';
             document.getElementById('conn-text').innerText = label;
 
-            // Actualizar Tabla de Sensores (Función AUDITORÍA)
             if(document.getElementById('sensorModal').style.display === 'block') {
                 document.getElementById('s-rpm').innerText = rpm;
                 document.getElementById('s-temp').innerText = temp + " °C";
-                // Simulación de fluctuación menor para realismo
                 document.getElementById('s-batt').innerText = (12.4 + Math.random()*0.5).toFixed(1) + " V";
                 document.getElementById('s-map').innerText = (30 + Math.random()*5).toFixed(0) + " kPa";
             }
@@ -207,38 +218,85 @@
             updateAllData("--", "--", "OFFLINE", false);
         }
 
-        // --- LÓGICA OSCILOSCOPIO (AUDITORÍA) ---
+        // --- LÓGICA OSCILOSCOPIO AVANZADA (v6.3.1) ---
         function openScope() {
             openModal('scopeModal');
-            const canvas = document.getElementById('scopeCanvas');
-            const ctx = canvas.getContext('2d');
-            let x = 0;
-            let y = 0;
-            
-            if(scopeTimer) clearInterval(scopeTimer);
-            
-            // Dibujar fondo una vez
-            ctx.fillStyle = "#000"; 
-            ctx.fillRect(0,0,300,150);
-
-            scopeTimer = setInterval(() => {
-                x += 5;
-                if(x > 300) {
-                    x = 0;
-                    ctx.fillStyle = "rgba(0,0,0,0.2)"; // Efecto barrido
-                    ctx.fillRect(0,0,300,150);
-                }
-                // Generar onda senoidal con ruido simulado
-                y = 75 + Math.sin(x * 0.1) * 40 + (Math.random() * 10);
-                
-                ctx.fillStyle = "#00ff9d";
-                ctx.fillRect(x, y, 2, 2);
-            }, 30);
+            resetScope();
         }
 
         function closeScope() {
             closeModal('scopeModal');
             if(scopeTimer) clearInterval(scopeTimer);
+        }
+
+        function resetScope() {
+            if(scopeTimer) clearInterval(scopeTimer);
+            
+            const sensor = document.getElementById('scopeSensor').value;
+            const canvas = document.getElementById('scopeCanvas');
+            const ctx = canvas.getContext('2d');
+            const label = document.getElementById('scopeLabel');
+            
+            label.innerText = "Monitor: " + sensor + " (Live)";
+            
+            let x = 0;
+            let y = 0;
+            
+            // Limpiar inicial
+            ctx.fillStyle = "#000"; 
+            ctx.fillRect(0,0,300,150);
+
+            scopeTimer = setInterval(() => {
+                x += 3; // Velocidad de barrido
+                if(x > 300) {
+                    x = 0;
+                    ctx.fillStyle = "rgba(0,0,0,0.15)"; // Barrido tipo fósforo
+                    ctx.fillRect(0,0,300,150);
+                }
+
+                // Generador de ondas según Sensor seleccionado
+                const t = Date.now() / 1000; // Tiempo base
+                
+                switch(sensor) {
+                    case 'O2': // Onda Senoidal Lenta
+                        y = 75 + Math.sin(t * 2) * 40 + (Math.random() * 5); 
+                        break;
+                    case 'CKP': // Onda Senoidal Rápida
+                        y = 75 + Math.sin(t * 20) * 50; 
+                        break;
+                    case 'CMP': // Onda Cuadrada
+                        y = (Math.sin(t * 10) > 0) ? 40 : 110;
+                        break;
+                    case 'MAF': // Señal con variación rápida
+                        y = 75 + Math.sin(t * 5) * 30 + (Math.random() * 10);
+                        break;
+                    case 'TPS': // Rampa variable (aceleración simulada)
+                        y = 120 - (Math.sin(t * 0.5) * 40 + 40);
+                        break;
+                    case 'MAP': // Señal estable con ruido
+                        y = 60 + (Math.random() * 10);
+                        break;
+                    case 'KS': // Plano con picos repentinos
+                        y = 75; 
+                        if(Math.random() > 0.95) y -= 50 * Math.random();
+                        break;
+                    case 'ABS': // Senoidal media constante
+                        y = 75 + Math.sin(t * 15) * 40;
+                        break;
+                    case 'INJ': // Pulso de inyección (Negativo)
+                        y = (Math.sin(t * 15) > 0.8) ? 100 : 20; 
+                        break;
+                    case 'IG': // Pico inductivo
+                        y = 75;
+                        if(Math.random() > 0.9) y = 10; // Disparo
+                        break;
+                    default: 
+                        y = 75;
+                }
+                
+                ctx.fillStyle = "#00ff9d";
+                ctx.fillRect(x, y, 3, 3); // Dibujar punto
+            }, 20); // 50 FPS aprox
         }
 
         async function connectBluetooth() {
