@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.1.0</title>
+    <title>AutoFix PRO v7.2.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
-        :root { --main-color: #00f3ff; --neon-red: #ff0055; --neon-green: #00ff9d; --neon-amber: #ffaa00; --bg-dark: #0a0a0f; --panel-bg: #141419; --text-main: #e0e0e0; }
+        :root { --main-color: #00f3ff; --neon-red: #ff0055; --neon-green: #00ff9d; --neon-amber: #ffaa00; --bg-dark: #0a0a0f; --panel-bg: #141419; --text-main: #e0e0e0; --whatsapp-green: #25D366; }
         body { font-family: 'Segoe UI', monospace; background: var(--bg-dark); color: var(--text-main); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; user-select: none; }
         header { width: 100%; max-width: 600px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .brand { font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; }
@@ -96,7 +96,7 @@
         .hex-data { color: var(--main-color); letter-spacing: 2px; }
         .hex-ascii { color: #aaa; }
 
-        /* ESTILOS COTIZADOR (v7.1.0) */
+        /* ESTILOS COTIZADOR (v7.2.0) */
         .quote-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; text-align: left; }
         .quote-title { color: var(--neon-green); font-size: 1.2rem; font-weight: bold; }
         .quote-meta { font-size: 0.8rem; color: #888; }
@@ -109,17 +109,17 @@
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.1.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.2.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.1.0 (AUTO QUOTE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.2.0 (WHATSAPP INTEGRATION)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.1.0</span></div>
+        <div class="brand">AutoFix <span>PRO v7.2.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -152,7 +152,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.1.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.2.0 Ready.</div></div>
 
     <div id="quoteModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
@@ -178,10 +178,10 @@
                 TOTAL: <span id="q-total">$ 0.00</span>
             </div>
 
-            <div style="margin-top:20px; display:flex; gap:10px;">
-                <button class="btn-small" onclick="alert('PDF Generado para Impresión')">🖨️ IMPRIMIR</button>
-                <button class="btn-small" style="background:#25D366; border-color:#25D366;" onclick="alert('Enviando a WhatsApp del Cliente...')">📱 WHATSAPP</button>
+            <div style="margin-top:20px; display:flex; gap:10px; justify-content: flex-end;">
                 <button class="btn-small" style="background:#333;" onclick="alert('Modo Edición Activado')">✏️ EDITAR</button>
+                <button class="btn-small" style="background:#0072ff; border-color:#0072ff;" onclick="alert('PDF Generado para Impresión')">🖨️ IMPRIMIR</button>
+                <button class="btn-small" style="background:var(--whatsapp-green); border-color:var(--whatsapp-green); color:white; font-weight:bold;" onclick="sendWhatsApp()">📱 ENVIAR A CLIENTE</button>
             </div>
         </div>
     </div>
@@ -398,6 +398,9 @@
         let savedLogs = [];
         let playInterval = null;
         let hexTimer = null;
+        
+        // --- LOGICA DE COTIZACIÓN (v7.2.0) ---
+        let currentTotal = 0; // Para pasar al botón de whatsapp
 
         const servicesData = {
             'OIL': { title: 'RESET ACEITE', instr: 'Encienda el contacto (ON). Motor apagado.' },
@@ -425,7 +428,6 @@
             { code: 'P0217', desc: '(Sobrecalentamiento)', rpm: '3200', vss: '110', ect: '118', load: '75', trim: '-5 %', tps: '60', map: '80' }
         ];
 
-        // --- SISTEMA COTIZADOR (v7.1.0) ---
         const repairDatabase = {
             'P0300': { desc: 'Misfire Random', parts: [ {name: 'Juego Bujías Iridium', cost: 48}, {name: 'Bobina Encendido (x1)', cost: 35} ], labor: 40 },
             'P0171': { desc: 'Sistema Muy Pobre', parts: [ {name: 'Sensor MAF', cost: 120}, {name: 'Filtro Aire', cost: 15} ], labor: 25 },
@@ -436,7 +438,6 @@
 
         function generateQuote() {
             openModal('quoteModal');
-            // Simular detección de falla
             const code = Object.keys(repairDatabase)[Math.floor(Math.random() * 5)];
             const fix = repairDatabase[code];
             
@@ -447,17 +448,28 @@
             tbody.innerHTML = "";
             let total = 0;
             
-            // Agregar Repuestos
             fix.parts.forEach(part => {
                 tbody.innerHTML += `<tr><td>${part.name}</td><td>1</td><td>$${part.cost}</td><td>$${part.cost}</td></tr>`;
                 total += part.cost;
             });
             
-            // Agregar Mano de Obra
             tbody.innerHTML += `<tr><td>Mano de Obra</td><td>1</td><td>$${fix.labor}</td><td>$${fix.labor}</td></tr>`;
             total += fix.labor;
             
-            document.getElementById('q-total').innerText = "$ " + total.toFixed(2);
+            currentTotal = total.toFixed(2);
+            document.getElementById('q-total').innerText = "$ " + currentTotal;
+        }
+
+        // --- FUNCIÓN WHATSAPP (v7.2.0) ---
+        function sendWhatsApp() {
+            let phone = prompt("Ingrese el número de WhatsApp del cliente (Ej: 584121234567):");
+            if(phone) {
+                // Eliminar símbolos +, espacios, guiones
+                phone = phone.replace(/\D/g,'');
+                const text = `Hola, este es un mensaje automático de *AutoFix PRO*.\n\nLe enviamos el presupuesto para su vehículo:\n\n*Diagnóstico:* ${document.getElementById('q-dtc').innerText}\n*Total Estimado:* $${currentTotal}\n\nPara aprobar el servicio, responda a este mensaje.`;
+                const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+            }
         }
 
         const modulesHS = ["ECM", "TCM", "ABS", "SRS", "BCM", "EPS", "TPMS", "EPB", "SAS", "IMMO"];
