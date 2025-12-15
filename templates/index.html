@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.6.0</title>
+    <title>AutoFix PRO v6.7.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -48,8 +48,6 @@
         .data-table th { color: var(--main-color); border-bottom: 1px solid #444; padding: 8px; }
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
         .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
-        
-        /* ESTILOS SERVICIO */
         .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .service-btn { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; }
         .service-btn:active { background: #30363d; transform: scale(0.95); }
@@ -58,30 +56,27 @@
         .wizard-active { display: block; }
         .progress-bar-bg { width: 100%; background: #333; height: 8px; border-radius: 4px; margin-top: 20px; overflow: hidden; }
         .progress-bar-fill { height: 100%; background: var(--neon-green); width: 0%; transition: width 0.5s; }
-        
-        /* ESTILOS PLAYER DATA LOG */
         .player-controls { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .player-btn { background: #333; border: none; color: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
         .timeline { width: 100%; height: 5px; background: #333; margin-top: 20px; position: relative; }
         .timeline-progress { height: 100%; background: var(--neon-amber); width: 0%; }
-
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.6.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.7.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.6.0 (DATA LOGGING)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.7.0 (DYNAMIC SIM)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v6.6.0</span></div>
+        <div class="brand">AutoFix <span>PRO v6.7.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -99,7 +94,7 @@
         <button class="action-btn btn-green" onclick="openModal('predictModal')"><span class="material-icons-round">auto_graph</span>PRED</button>
         <button id="btnRec" class="action-btn btn-red" onclick="toggleRec()"><span class="material-icons-round">fiber_manual_record</span>REC</button>
         <button class="action-btn" onclick="openModal('topologyModal')"><span class="material-icons-round">hub</span>NET</button>
-        <button class="action-btn" onclick="openModal('freezeModal')"><span class="material-icons-round">ac_unit</span>FREEZE</button>
+        <button class="action-btn" onclick="openFreezeFrame()"><span class="material-icons-round">ac_unit</span>FREEZE</button>
         <button class="action-btn btn-green" onclick="openModal('serviceModal')"><span class="material-icons-round">build</span>SERV</button>
         <button class="action-btn btn-green" onclick="openScope()"><span class="material-icons-round">ssid_chart</span>SCOPE</button>
         <button class="action-btn" onclick="openModal('sensorModal')"><span class="material-icons-round">tune</span>SENSORES</button>
@@ -114,17 +109,40 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.6.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.7.0 Ready.</div></div>
+
+    <div id="freezeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('freezeModal')">&times;</span>
+            <h2 style="color:var(--neon-amber); border-bottom:1px solid #333; padding-bottom:10px;">CUADRO CONGELADO</h2>
+            <div style="background:#1a1a1a; padding:10px; border-radius:5px; margin-bottom:15px; text-align:left;">
+                <p style="margin:5px 0;"><strong>Código Causante:</strong> <span id="ff-code" style="color:var(--neon-red); font-size:1.1rem;">---</span> <span id="ff-desc">---</span></p>
+                <p style="margin:5px 0;"><strong>Estado:</strong> <span style="color:#ffcc00;">ALMACENADO</span></p>
+            </div>
+            <h3 style="text-align:left; font-size:1rem; color:#888;">SNAPSHOT DE SENSORES</h3>
+            <table class="data-table">
+                <tr><th>PARÁMETRO</th><th>VALOR REGISTRADO</th></tr>
+                <tr><td>RPM del Motor</td><td id="ff-rpm" style="color:var(--main-color)">---</td></tr>
+                <tr><td>Velocidad (VSS)</td><td id="ff-vss" style="color:var(--main-color)">---</td></tr>
+                <tr><td>Temperatura (ECT)</td><td id="ff-ect" style="color:var(--main-color)">---</td></tr>
+                <tr><td>Carga del Motor (LOAD)</td><td id="ff-load" style="color:var(--main-color)">---</td></tr>
+                <tr><td>Fuel Trim (Corto)</td><td id="ff-trim" style="color:var(--neon-red)">---</td></tr>
+                <tr><td>Posición Acelerador</td><td id="ff-tps" style="color:var(--main-color)">---</td></tr>
+                <tr><td>Presión Múltiple (MAP)</td><td id="ff-map" style="color:var(--main-color)">---</td></tr>
+            </table>
+            <div style="margin-top:15px; display:flex; justify-content:space-between;">
+                <button class="btn-small" style="width:30%" onclick="openFreezeFrame()">&lt; Anterior</button>
+                <button class="btn-small" style="width:30%">Imprimir</button>
+                <button class="btn-small" style="width:30%" onclick="openFreezeFrame()">Siguiente &gt;</button>
+            </div>
+        </div>
+    </div>
 
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('historyModal')">&times;</span>
             <h2>HISTORIAL DE GRABACIONES</h2>
-            
-            <div id="logList" style="margin-bottom: 20px; text-align: left;">
-                <p style="color:#888;">No hay grabaciones recientes.</p>
-            </div>
-
+            <div id="logList" style="margin-bottom: 20px; text-align: left;"><p style="color:#888;">No hay grabaciones recientes.</p></div>
             <div id="logPlayer" style="display:none; background:#222; padding:15px; border-radius:10px;">
                 <h3 id="playTitle" style="color:var(--neon-green)">Reproduciendo...</h3>
                 <div class="timeline"><div id="playProgress" class="timeline-progress"></div></div>
@@ -143,17 +161,17 @@
             <h2 style="color:var(--neon-green)">FUNCIONES DE SERVICIO</h2>
             <div class="service-grid">
                 <div class="service-btn" onclick="startWizard('OIL')"><span class="service-icon">🛢️</span><small>OIL RESET</small></div>
-                <div class="service-btn" onclick="startWizard('EPB')"><span class="service-icon">🅿️</span><small>EPB (Frenos)</small></div>
-                <div class="service-btn" onclick="startWizard('SAS')"><span class="service-icon">☸️</span><small>SAS (Volante)</small></div>
-                <div class="service-btn" onclick="startWizard('DPF')"><span class="service-icon">💨</span><small>DPF (Filtro)</small></div>
-                <div class="service-btn" onclick="startWizard('BMS')"><span class="service-icon">🔋</span><small>BMS (Batería)</small></div>
-                <div class="service-btn" onclick="startWizard('ABS')"><span class="service-icon">🛑</span><small>ABS (Purga)</small></div>
-                <div class="service-btn" onclick="startWizard('INJ')"><span class="service-icon">💉</span><small>INJECTOR</small></div>
-                <div class="service-btn" onclick="startWizard('TPS')"><span class="service-icon">🦋</span><small>TPS (Acel)</small></div>
+                <div class="service-btn" onclick="startWizard('EPB')"><span class="service-icon">🅿️</span><small>EPB</small></div>
+                <div class="service-btn" onclick="startWizard('SAS')"><span class="service-icon">☸️</span><small>SAS</small></div>
+                <div class="service-btn" onclick="startWizard('DPF')"><span class="service-icon">💨</span><small>DPF</small></div>
+                <div class="service-btn" onclick="startWizard('BMS')"><span class="service-icon">🔋</span><small>BMS</small></div>
+                <div class="service-btn" onclick="startWizard('ABS')"><span class="service-icon">🛑</span><small>ABS</small></div>
+                <div class="service-btn" onclick="startWizard('INJ')"><span class="service-icon">💉</span><small>INJ</small></div>
+                <div class="service-btn" onclick="startWizard('TPS')"><span class="service-icon">🦋</span><small>TPS</small></div>
                 <div class="service-btn" onclick="startWizard('TPMS')"><span class="service-icon">🛞</span><small>TPMS</small></div>
                 <div class="service-btn" onclick="startWizard('GEAR')"><span class="service-icon">⚙️</span><small>CAJA</small></div>
                 <div class="service-btn" onclick="startWizard('IMMO')"><span class="service-icon">🔑</span><small>IMMO</small></div>
-                <div class="service-btn" onclick="startWizard('SUS')"><span class="service-icon">🎈</span><small>SUSPENSIÓN</small></div>
+                <div class="service-btn" onclick="startWizard('SUS')"><span class="service-icon">🎈</span><small>SUS</small></div>
                 <div class="service-btn" onclick="startWizard('SUN')"><span class="service-icon">☀️</span><small>TECHO</small></div>
                 <div class="service-btn" onclick="startWizard('AFS')"><span class="service-icon">💡</span><small>LUCES</small></div>
                 <div class="service-btn" onclick="startWizard('EGR')"><span class="service-icon">♻️</span><small>EGR</small></div>
@@ -167,13 +185,13 @@
             <h2 id="wizTitle" style="color:var(--main-color)">ASISTENTE</h2>
             <div id="wizStep1" class="wizard-step">
                 <p id="wizInstr" style="color:#ccc; font-size:1.1rem; margin: 20px 0;">Instrucciones...</p>
-                <div style="background:rgba(255,0,0,0.2); border:1px solid red; padding:10px; margin-bottom:20px;"><strong style="color:red">⚠ ADVERTENCIA:</strong><br>No apague el motor ni desconecte el scanner.</div>
+                <div style="background:rgba(255,0,0,0.2); border:1px solid red; padding:10px; margin-bottom:20px;"><strong style="color:red">⚠ ADVERTENCIA:</strong><br>No apague el motor.</div>
                 <button class="btn-full" onclick="nextStep(2)">CONTINUAR</button>
             </div>
             <div id="wizStep2" class="wizard-step">
                 <p>Seleccione una función:</p>
-                <button class="btn-full" style="background:#333; margin-bottom:10px;" onclick="executeAction('RESET/ABRIR')">EJECUTAR / ABRIR</button>
-                <button class="btn-full" style="background:#333;" onclick="executeAction('CERRAR/CALIBRAR')">CERRAR / CALIBRAR</button>
+                <button class="btn-full" style="background:#333; margin-bottom:10px;" onclick="executeAction('RESET/ABRIR')">EJECUTAR</button>
+                <button class="btn-full" style="background:#333;" onclick="executeAction('CERRAR/CALIBRAR')">CANCELAR</button>
             </div>
             <div id="wizStep3" class="wizard-step">
                 <p>Comunicando con ECU...</p>
@@ -181,35 +199,8 @@
             </div>
             <div id="wizStep4" class="wizard-step">
                 <div style="font-size:4rem; margin:20px 0;">✅</div>
-                <h3 style="color:var(--neon-green)">¡PROCEDIMIENTO EXITOSO!</h3>
+                <h3 style="color:var(--neon-green)">¡EXITOSO!</h3>
                 <button class="btn-full" onclick="closeModal('wizardModal')">FINALIZAR</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="freezeModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('freezeModal')">&times;</span>
-            <h2 style="color:var(--neon-amber); border-bottom:1px solid #333; padding-bottom:10px;">CUADRO CONGELADO</h2>
-            <div style="background:#1a1a1a; padding:10px; border-radius:5px; margin-bottom:15px; text-align:left;">
-                <p style="margin:5px 0;"><strong>Código Causante:</strong> <span style="color:var(--neon-red); font-size:1.1rem;">P0300</span> (Fallo de Encendido Aleatorio)</p>
-                <p style="margin:5px 0;"><strong>Estado:</strong> <span style="color:#ffcc00;">ALMACENADO</span></p>
-            </div>
-            <h3 style="text-align:left; font-size:1rem; color:#888;">SNAPSHOT DE SENSORES</h3>
-            <table class="data-table">
-                <tr><th>PARÁMETRO</th><th>VALOR REGISTRADO</th></tr>
-                <tr><td>RPM del Motor</td><td style="color:var(--main-color)">2540 rpm</td></tr>
-                <tr><td>Velocidad (VSS)</td><td style="color:var(--main-color)">85 km/h</td></tr>
-                <tr><td>Temperatura (ECT)</td><td style="color:var(--main-color)">98 °C</td></tr>
-                <tr><td>Carga del Motor (LOAD)</td><td style="color:var(--main-color)">45 %</td></tr>
-                <tr><td>Fuel Trim (Corto)</td><td style="color:var(--neon-red)">+12 % (Pobre)</td></tr>
-                <tr><td>Posición Acelerador</td><td style="color:var(--main-color)">32 %</td></tr>
-                <tr><td>Presión Múltiple (MAP)</td><td style="color:var(--main-color)">45 kPa</td></tr>
-            </table>
-            <div style="margin-top:15px; display:flex; justify-content:space-between;">
-                <button class="btn-small" style="width:30%">&lt; Anterior</button>
-                <button class="btn-small" style="width:30%">Imprimir</button>
-                <button class="btn-small" style="width:30%">Siguiente &gt;</button>
             </div>
         </div>
     </div>
@@ -280,12 +271,10 @@
         let hardwareMode = 'sim';
         let bleDevice = null;
         let scopeTimer = null;
-        
-        // VARIABLES DATA LOG (v6.6.0)
         let isRecording = false;
         let logSession = [];
         let logTimer = null;
-        let savedLogs = []; // Almacenamiento temporal de logs
+        let savedLogs = [];
         let playInterval = null;
 
         const servicesData = {
@@ -305,6 +294,15 @@
             'AFS': { title: 'FAROS AFS', instr: 'Nivelar vehículo frente a pared.' },
             'EGR': { title: 'ADAPTACIÓN EGR', instr: 'Válvula limpia o reemplazada.' }
         };
+
+        // --- DATABASE DE FALLOS (FREEZE FRAME DINÁMICO v6.7.0) ---
+        const freezeFrames = [
+            { code: 'P0300', desc: '(Misfire Random)', rpm: '2540', vss: '85', ect: '98', load: '45', trim: '+12 %', tps: '32', map: '45' },
+            { code: 'P0171', desc: '(Mezcla Pobre B1)', rpm: '850', vss: '0', ect: '95', load: '18', trim: '+25 %', tps: '12', map: '32' },
+            { code: 'P0420', desc: '(Catalizador B1)', rpm: '1800', vss: '60', ect: '92', load: '30', trim: '+3 %', tps: '25', map: '40' },
+            { code: 'P0113', desc: '(IAT Alto Voltaje)', rpm: '0', vss: '0', ect: '40', load: '0', trim: '0 %', tps: '0', map: '101' },
+            { code: 'P0217', desc: '(Sobrecalentamiento)', rpm: '3200', vss: '110', ect: '118', load: '75', trim: '-5 %', tps: '60', map: '80' }
+        ];
 
         async function attemptLogin() {
             const email = document.getElementById('login-email').value.trim();
@@ -351,7 +349,6 @@
                 document.getElementById('s-map').innerText = (30 + Math.random()*5).toFixed(0) + " kPa";
             }
 
-            // LÓGICA DE GRABACIÓN (v6.6.0)
             if(isRecording) {
                 logSession.push({rpm: rpm, temp: temp});
                 const seconds = logSession.length;
@@ -365,18 +362,32 @@
             updateAllData("--", "--", "OFFLINE", false);
         }
 
-        // --- SISTEMA DATA LOG (v6.6.0) ---
+        // --- FUNCIÓN DINÁMICA DE FREEZE FRAME (v6.7.0) ---
+        function openFreezeFrame() {
+            openModal('freezeModal');
+            // Elegir un error aleatorio de la base de datos
+            const error = freezeFrames[Math.floor(Math.random() * freezeFrames.length)];
+            
+            document.getElementById('ff-code').innerText = error.code;
+            document.getElementById('ff-desc').innerText = error.desc;
+            document.getElementById('ff-rpm').innerText = error.rpm + " rpm";
+            document.getElementById('ff-vss').innerText = error.vss + " km/h";
+            document.getElementById('ff-ect').innerText = error.ect + " °C";
+            document.getElementById('ff-load').innerText = error.load + " %";
+            document.getElementById('ff-trim').innerText = error.trim;
+            document.getElementById('ff-tps').innerText = error.tps + " %";
+            document.getElementById('ff-map').innerText = error.map + " kPa";
+        }
+
         function toggleRec() {
             const btn = document.getElementById('btnRec');
             if(!isRecording) {
-                // Iniciar Grabación
                 isRecording = true;
                 logSession = [];
                 btn.className = "action-btn rec-active";
                 alert("GRABACIÓN INICIADA\nConduzca el vehículo para capturar datos.");
                 document.getElementById('conn-dot').className = 'dot rec';
             } else {
-                // Detener Grabación
                 isRecording = false;
                 btn.className = "action-btn btn-red";
                 document.getElementById('conn-dot').className = 'dot active';
@@ -418,7 +429,6 @@
             let i = 0;
             const bar = document.getElementById('playProgress');
             if(playInterval) clearInterval(playInterval);
-            
             playInterval = setInterval(() => {
                 if(i >= currentPlayLog.length) {
                     clearInterval(playInterval);
@@ -428,12 +438,10 @@
                 updateAllData(data.rpm, data.temp, "PLAYBACK", true);
                 bar.style.width = ((i / currentPlayLog.length) * 100) + "%";
                 i++;
-            }, 1000); // Velocidad 1x (1 segundo por dato)
+            }, 1000);
         }
 
-        function pauseLog() {
-            if(playInterval) clearInterval(playInterval);
-        }
+        function pauseLog() { if(playInterval) clearInterval(playInterval); }
 
         function stopLog() {
             pauseLog();
@@ -527,7 +535,7 @@
         function startDummyBLELoop(name) {
             let fakeRpm = 800;
             setInterval(() => {
-                if(!isRecording && !playInterval) { // Solo si no estamos grabando ni reproduciendo
+                if(!isRecording && !playInterval) {
                     fakeRpm += Math.floor(Math.random() * 100) - 50;
                     updateAllData(fakeRpm, 88, "BLE: " + name, true);
                 }
