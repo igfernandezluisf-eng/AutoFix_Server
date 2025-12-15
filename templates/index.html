@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.7.0</title>
+    <title>AutoFix PRO v6.8.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -60,23 +60,39 @@
         .player-btn { background: #333; border: none; color: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
         .timeline { width: 100%; height: 5px; background: #333; margin-top: 20px; position: relative; }
         .timeline-progress { height: 100%; background: var(--neon-amber); width: 0%; }
+        
+        /* ESTILOS TOPOLOGÍA V6.8.0 */
+        .topology-container { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+        .gateway-node { background: #333; border: 2px solid #fff; color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; position: relative; }
+        .gateway-node::after { content: ''; position: absolute; bottom: -20px; left: 50%; width: 2px; height: 20px; background: #555; }
+        .bus-line { width: 90%; height: 2px; background: #555; margin-bottom: 20px; position: relative; }
+        .module-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+        .module-node { padding: 10px 5px; border-radius: 5px; text-align: center; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: 1px solid transparent; transition: 0.2s; color: #000; }
+        .mod-green { background: var(--neon-green); box-shadow: 0 0 5px var(--neon-green); }
+        .mod-orange { background: var(--neon-amber); box-shadow: 0 0 5px var(--neon-amber); }
+        .mod-red { background: var(--neon-red); box-shadow: 0 0 5px var(--neon-red); color: #fff; }
+        .mod-grey { background: #333; border-color: #555; color: #777; }
+        .topology-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; font-size: 0.7rem; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-box { width: 12px; height: 12px; border-radius: 2px; }
+
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.7.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.8.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.7.0 (DYNAMIC SIM)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.8.0 (TOPOLOGY READY)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v6.7.0</span></div>
+        <div class="brand">AutoFix <span>PRO v6.8.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -93,7 +109,7 @@
         <button class="action-btn" onclick="openModal('crmModal')"><span class="material-icons-round">groups</span>CRM</button>
         <button class="action-btn btn-green" onclick="openModal('predictModal')"><span class="material-icons-round">auto_graph</span>PRED</button>
         <button id="btnRec" class="action-btn btn-red" onclick="toggleRec()"><span class="material-icons-round">fiber_manual_record</span>REC</button>
-        <button class="action-btn" onclick="openModal('topologyModal')"><span class="material-icons-round">hub</span>NET</button>
+        <button class="action-btn" onclick="openTopology()"><span class="material-icons-round">hub</span>NET</button>
         <button class="action-btn" onclick="openFreezeFrame()"><span class="material-icons-round">ac_unit</span>FREEZE</button>
         <button class="action-btn btn-green" onclick="openModal('serviceModal')"><span class="material-icons-round">build</span>SERV</button>
         <button class="action-btn btn-green" onclick="openScope()"><span class="material-icons-round">ssid_chart</span>SCOPE</button>
@@ -109,7 +125,27 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.7.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.8.0 Ready.</div></div>
+
+    <div id="topologyModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="closeModal('topologyModal')">&times;</span>
+            <h2>TOPOLOGÍA CAN BUS</h2>
+            <div class="topology-container">
+                <div class="gateway-node">GATEWAY CENTRAL</div>
+                <div class="bus-line"></div>
+                <div id="topologyGrid" class="module-grid">
+                    </div>
+            </div>
+            <div class="topology-legend">
+                <div class="legend-item"><div class="legend-box" style="background:var(--neon-green)"></div><span>ONLINE (OK)</span></div>
+                <div class="legend-item"><div class="legend-box" style="background:var(--neon-amber)"></div><span>FALLA (DTC)</span></div>
+                <div class="legend-item"><div class="legend-box" style="background:var(--neon-red)"></div><span>OFFLINE (ERR)</span></div>
+                <div class="legend-item"><div class="legend-box" style="background:#333; border:1px solid #555"></div><span>NO INSTALADO</span></div>
+            </div>
+            <button class="btn-full" style="margin-top:15px;" onclick="openTopology()">🔄 ACTUALIZAR TOPOLOGÍA</button>
+        </div>
+    </div>
 
     <div id="freezeModal" class="modal">
         <div class="modal-content">
@@ -260,7 +296,6 @@
     <div id="crmModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('crmModal')">&times;</span><h2>CRM</h2><p>Juan P. - Fiesta 2015 (Listo)</p></div></div>
     <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZAR</h2><p>Total: $ 85.00</p><button class="btn-full">GENERAR</button></div></div>
     <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>IA</h2><p>Salud: 85%</p></div></div>
-    <div id="topologyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('topologyModal')">&times;</span><h2>CAN BUS</h2><p>ECU ● OK</p></div></div>
     <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Nissan Sentra 2018</p></div></div>
     <div id="hexModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('hexModal')">&times;</span><h2>HEX</h2><textarea class="input-dark">00 FF A1 B2...</textarea></div></div>
 
@@ -295,7 +330,6 @@
             'EGR': { title: 'ADAPTACIÓN EGR', instr: 'Válvula limpia o reemplazada.' }
         };
 
-        // --- DATABASE DE FALLOS (FREEZE FRAME DINÁMICO v6.7.0) ---
         const freezeFrames = [
             { code: 'P0300', desc: '(Misfire Random)', rpm: '2540', vss: '85', ect: '98', load: '45', trim: '+12 %', tps: '32', map: '45' },
             { code: 'P0171', desc: '(Mezcla Pobre B1)', rpm: '850', vss: '0', ect: '95', load: '18', trim: '+25 %', tps: '12', map: '32' },
@@ -303,6 +337,40 @@
             { code: 'P0113', desc: '(IAT Alto Voltaje)', rpm: '0', vss: '0', ect: '40', load: '0', trim: '0 %', tps: '0', map: '101' },
             { code: 'P0217', desc: '(Sobrecalentamiento)', rpm: '3200', vss: '110', ect: '118', load: '75', trim: '-5 %', tps: '60', map: '80' }
         ];
+
+        // --- SISTEMA DE TOPOLOGÍA (v6.8.0) ---
+        const moduleNames = ["ECM", "TCM", "ABS", "SRS", "BCM", "IPC", "HVAC", "EPS", "EPB", "TPMS", "PDM", "DDM", "RDM", "LDM", "SAS", "IMMO", "RAD", "AMP", "SUN", "PAM"];
+
+        function openTopology() {
+            openModal('topologyModal');
+            const grid = document.getElementById('topologyGrid');
+            grid.innerHTML = "";
+            
+            // Mezclar módulos para aleatoriedad
+            let shuffled = moduleNames.sort(() => 0.5 - Math.random());
+            
+            // Asignar estados fijos (5 de cada uno)
+            for(let i=0; i<20; i++) {
+                let statusClass = "";
+                let onClickAction = "";
+                
+                if(i < 5) { // 5 Verdes
+                    statusClass = "mod-green";
+                    onClickAction = "alert('Módulo Online. Sin códigos de error.')";
+                } else if(i < 10) { // 5 Naranjas
+                    statusClass = "mod-orange";
+                    onClickAction = "alert('ADVERTENCIA: 2 Códigos de Falla Presentes\\n- C0035\\n- U0100')";
+                } else if(i < 15) { // 5 Rojos
+                    statusClass = "mod-red";
+                    onClickAction = "alert('ERROR CRÍTICO: Módulo no responde.\\nVerifique alimentación y red CAN.')";
+                } else { // 5 Grises
+                    statusClass = "mod-grey";
+                    onClickAction = "alert('Módulo no equipado en este vehículo.')";
+                }
+                
+                grid.innerHTML += `<div class="module-node ${statusClass}" onclick="${onClickAction}">${shuffled[i]}</div>`;
+            }
+        }
 
         async function attemptLogin() {
             const email = document.getElementById('login-email').value.trim();
@@ -362,12 +430,9 @@
             updateAllData("--", "--", "OFFLINE", false);
         }
 
-        // --- FUNCIÓN DINÁMICA DE FREEZE FRAME (v6.7.0) ---
         function openFreezeFrame() {
             openModal('freezeModal');
-            // Elegir un error aleatorio de la base de datos
             const error = freezeFrames[Math.floor(Math.random() * freezeFrames.length)];
-            
             document.getElementById('ff-code').innerText = error.code;
             document.getElementById('ff-desc').innerText = error.desc;
             document.getElementById('ff-rpm').innerText = error.rpm + " rpm";
@@ -552,6 +617,7 @@
         function toggleVoice() { alert("Escuchando comandos por voz..."); }
         function startScan() { alert("Escanéo OBD2 Iniciado..."); setTimeout(()=>alert("Sin códigos de falla (DTC) encontrados."), 2000); }
         function testSecurity() { alert("Bypassing Security Gateway... OK"); }
+        function toggleRec() { alert("Grabando Log de Datos en nube..."); }
         function openHexEditor(){openModal('hexModal')}
     </script>
 </body>
