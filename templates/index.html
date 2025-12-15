@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.2.1</title>
+    <title>AutoFix PRO v7.2.2</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -96,7 +96,7 @@
         .hex-data { color: var(--main-color); letter-spacing: 2px; }
         .hex-ascii { color: #aaa; }
 
-        /* ESTILOS COTIZADOR (v7.2.1) */
+        /* ESTILOS COTIZADOR (v7.2.2 - FIX) */
         .quote-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; text-align: left; }
         .quote-title { color: var(--neon-green); font-size: 1.2rem; font-weight: bold; }
         .quote-meta { font-size: 0.8rem; color: #888; }
@@ -109,17 +109,17 @@
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.2.1</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.2.2</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.2.1 (EDIT QUOTE FIX)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.2.2 (QUOTE EDIT FIX)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.2.1</span></div>
+        <div class="brand">AutoFix <span>PRO v7.2.2</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -152,7 +152,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.2.1 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.2.2 Ready.</div></div>
 
     <div id="quoteModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
@@ -399,7 +399,7 @@
         let playInterval = null;
         let hexTimer = null;
         
-        // --- LOGICA DE COTIZACIÓN (v7.2.1) ---
+        // --- LOGICA DE COTIZACIÓN (v7.2.2 - FIX) ---
         let currentTotal = 0; 
         let isEditingQuote = false;
 
@@ -467,7 +467,7 @@
             document.getElementById('q-total').innerText = "$ " + currentTotal;
         }
 
-        // --- FUNCIÓN EDITAR COTIZACIÓN (v7.2.1) ---
+        // --- FUNCIÓN EDITAR COTIZACIÓN (FIXED v7.2.2) ---
         function toggleEditQuote() {
             const btn = document.getElementById('btnEditQuote');
             const rows = document.querySelectorAll('#quoteBody tr');
@@ -480,13 +480,15 @@
                 btn.style.color = "#000";
                 
                 rows.forEach(row => {
-                    // Celdas: 0=Desc, 1=Cant, 2=Precio, 3=Total
-                    row.cells[1].contentEditable = "true"; // Cantidad
-                    row.cells[2].contentEditable = "true"; // Precio
-                    row.cells[1].style.border = "1px solid #555";
-                    row.cells[2].style.border = "1px solid #555";
-                    row.cells[1].style.backgroundColor = "#222";
-                    row.cells[2].style.backgroundColor = "#222";
+                    // Feedback visual claro: Fondo blanco, texto negro
+                    row.cells[1].contentEditable = "true";
+                    row.cells[2].contentEditable = "true";
+                    row.cells[1].style.border = "1px solid #fff";
+                    row.cells[2].style.border = "1px solid #fff";
+                    row.cells[1].style.backgroundColor = "#fff";
+                    row.cells[2].style.backgroundColor = "#fff";
+                    row.cells[1].style.color = "#000";
+                    row.cells[2].style.color = "#000";
                 });
             } else {
                 // Guardar y Recalcular
@@ -504,12 +506,15 @@
                     row.cells[2].style.border = "none";
                     row.cells[1].style.background = "transparent";
                     row.cells[2].style.background = "transparent";
+                    row.cells[1].style.color = "#ccc"; // Restaurar color original
+                    row.cells[2].style.color = "#ccc";
                     
-                    // Limpiar datos (quitar $)
+                    // Limpiar datos (quitar $) y evitar errores
                     let qty = parseFloat(row.cells[1].innerText.replace(/[^0-9.]/g, '')) || 0;
                     let price = parseFloat(row.cells[2].innerText.replace(/[^0-9.]/g, '')) || 0;
                     
-                    // Re-formatear celda precio
+                    // Re-formatear celda precio y cantidad para que se vean bien
+                    row.cells[1].innerText = qty;
                     row.cells[2].innerText = "$" + price;
                     
                     // Calcular subtotal fila
@@ -521,7 +526,7 @@
                 
                 currentTotal = newTotal.toFixed(2);
                 document.getElementById('q-total').innerText = "$ " + currentTotal;
-                alert("Cotización Actualizada.");
+                alert("Cotización Actualizada Correctamente.");
             }
         }
 
