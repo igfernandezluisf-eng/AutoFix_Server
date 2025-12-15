@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.2.0</title>
+    <title>AutoFix PRO v7.2.1</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -96,7 +96,7 @@
         .hex-data { color: var(--main-color); letter-spacing: 2px; }
         .hex-ascii { color: #aaa; }
 
-        /* ESTILOS COTIZADOR (v7.2.0) */
+        /* ESTILOS COTIZADOR (v7.2.1) */
         .quote-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; text-align: left; }
         .quote-title { color: var(--neon-green); font-size: 1.2rem; font-weight: bold; }
         .quote-meta { font-size: 0.8rem; color: #888; }
@@ -109,17 +109,17 @@
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.2.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.2.1</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.2.0 (WHATSAPP INTEGRATION)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.2.1 (EDIT QUOTE FIX)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.2.0</span></div>
+        <div class="brand">AutoFix <span>PRO v7.2.1</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -152,7 +152,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.2.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.2.1 Ready.</div></div>
 
     <div id="quoteModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
@@ -179,7 +179,7 @@
             </div>
 
             <div style="margin-top:20px; display:flex; gap:10px; justify-content: flex-end;">
-                <button class="btn-small" style="background:#333;" onclick="alert('Modo Edición Activado')">✏️ EDITAR</button>
+                <button id="btnEditQuote" class="btn-small" style="background:#333;" onclick="toggleEditQuote()">✏️ EDITAR</button>
                 <button class="btn-small" style="background:#0072ff; border-color:#0072ff;" onclick="alert('PDF Generado para Impresión')">🖨️ IMPRIMIR</button>
                 <button class="btn-small" style="background:var(--whatsapp-green); border-color:var(--whatsapp-green); color:white; font-weight:bold;" onclick="sendWhatsApp()">📱 ENVIAR A CLIENTE</button>
             </div>
@@ -399,8 +399,9 @@
         let playInterval = null;
         let hexTimer = null;
         
-        // --- LOGICA DE COTIZACIÓN (v7.2.0) ---
-        let currentTotal = 0; // Para pasar al botón de whatsapp
+        // --- LOGICA DE COTIZACIÓN (v7.2.1) ---
+        let currentTotal = 0; 
+        let isEditingQuote = false;
 
         const servicesData = {
             'OIL': { title: 'RESET ACEITE', instr: 'Encienda el contacto (ON). Motor apagado.' },
@@ -438,6 +439,12 @@
 
         function generateQuote() {
             openModal('quoteModal');
+            // Resetear estado de edición
+            isEditingQuote = false;
+            document.getElementById('btnEditQuote').innerText = "✏️ EDITAR";
+            document.getElementById('btnEditQuote').style.backgroundColor = "#333";
+            document.getElementById('btnEditQuote').style.color = "#fff";
+
             const code = Object.keys(repairDatabase)[Math.floor(Math.random() * 5)];
             const fix = repairDatabase[code];
             
@@ -460,11 +467,67 @@
             document.getElementById('q-total').innerText = "$ " + currentTotal;
         }
 
-        // --- FUNCIÓN WHATSAPP (v7.2.0) ---
+        // --- FUNCIÓN EDITAR COTIZACIÓN (v7.2.1) ---
+        function toggleEditQuote() {
+            const btn = document.getElementById('btnEditQuote');
+            const rows = document.querySelectorAll('#quoteBody tr');
+            
+            if (!isEditingQuote) {
+                // Activar Edición
+                isEditingQuote = true;
+                btn.innerText = "💾 GUARDAR";
+                btn.style.backgroundColor = "#e3b341"; // Amber
+                btn.style.color = "#000";
+                
+                rows.forEach(row => {
+                    // Celdas: 0=Desc, 1=Cant, 2=Precio, 3=Total
+                    row.cells[1].contentEditable = "true"; // Cantidad
+                    row.cells[2].contentEditable = "true"; // Precio
+                    row.cells[1].style.border = "1px solid #555";
+                    row.cells[2].style.border = "1px solid #555";
+                    row.cells[1].style.backgroundColor = "#222";
+                    row.cells[2].style.backgroundColor = "#222";
+                });
+            } else {
+                // Guardar y Recalcular
+                isEditingQuote = false;
+                btn.innerText = "✏️ EDITAR";
+                btn.style.backgroundColor = "#333";
+                btn.style.color = "#fff";
+                
+                let newTotal = 0;
+                
+                rows.forEach(row => {
+                    row.cells[1].contentEditable = "false";
+                    row.cells[2].contentEditable = "false";
+                    row.cells[1].style.border = "none";
+                    row.cells[2].style.border = "none";
+                    row.cells[1].style.background = "transparent";
+                    row.cells[2].style.background = "transparent";
+                    
+                    // Limpiar datos (quitar $)
+                    let qty = parseFloat(row.cells[1].innerText.replace(/[^0-9.]/g, '')) || 0;
+                    let price = parseFloat(row.cells[2].innerText.replace(/[^0-9.]/g, '')) || 0;
+                    
+                    // Re-formatear celda precio
+                    row.cells[2].innerText = "$" + price;
+                    
+                    // Calcular subtotal fila
+                    let subtotal = qty * price;
+                    row.cells[3].innerText = "$" + subtotal;
+                    
+                    newTotal += subtotal;
+                });
+                
+                currentTotal = newTotal.toFixed(2);
+                document.getElementById('q-total').innerText = "$ " + currentTotal;
+                alert("Cotización Actualizada.");
+            }
+        }
+
         function sendWhatsApp() {
             let phone = prompt("Ingrese el número de WhatsApp del cliente (Ej: 584121234567):");
             if(phone) {
-                // Eliminar símbolos +, espacios, guiones
                 phone = phone.replace(/\D/g,'');
                 const text = `Hola, este es un mensaje automático de *AutoFix PRO*.\n\nLe enviamos el presupuesto para su vehículo:\n\n*Diagnóstico:* ${document.getElementById('q-dtc').innerText}\n*Total Estimado:* $${currentTotal}\n\nPara aprobar el servicio, responda a este mensaje.`;
                 const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
