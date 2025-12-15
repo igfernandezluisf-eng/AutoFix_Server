@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.3.1</title>
+    <title>AutoFix PRO v6.4.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -51,17 +51,17 @@
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.4.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.3.1 (MULTI-SCOPE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.4.0 (FREEZE MODE)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO</span></div>
+        <div class="brand">AutoFix <span>PRO v6.4.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -94,7 +94,37 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.3.1 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.4.0 Ready.</div></div>
+
+    <div id="freezeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('freezeModal')">&times;</span>
+            <h2 style="color:var(--neon-amber); border-bottom:1px solid #333; padding-bottom:10px;">CUADRO CONGELADO</h2>
+            
+            <div style="background:#1a1a1a; padding:10px; border-radius:5px; margin-bottom:15px; text-align:left;">
+                <p style="margin:5px 0;"><strong>Código Causante:</strong> <span style="color:var(--neon-red); font-size:1.1rem;">P0300</span> (Fallo de Encendido Aleatorio)</p>
+                <p style="margin:5px 0;"><strong>Estado:</strong> <span style="color:#ffcc00;">ALMACENADO</span></p>
+            </div>
+
+            <h3 style="text-align:left; font-size:1rem; color:#888;">SNAPSHOT DE SENSORES</h3>
+            <table class="data-table">
+                <tr><th>PARÁMETRO</th><th>VALOR REGISTRADO</th></tr>
+                <tr><td>RPM del Motor</td><td style="color:var(--main-color)">2540 rpm</td></tr>
+                <tr><td>Velocidad (VSS)</td><td style="color:var(--main-color)">85 km/h</td></tr>
+                <tr><td>Temperatura (ECT)</td><td style="color:var(--main-color)">98 °C</td></tr>
+                <tr><td>Carga del Motor (LOAD)</td><td style="color:var(--main-color)">45 %</td></tr>
+                <tr><td>Fuel Trim (Corto)</td><td style="color:var(--neon-red)">+12 % (Pobre)</td></tr>
+                <tr><td>Posición Acelerador</td><td style="color:var(--main-color)">32 %</td></tr>
+                <tr><td>Presión Múltiple (MAP)</td><td style="color:var(--main-color)">45 kPa</td></tr>
+            </table>
+            
+            <div style="margin-top:15px; display:flex; justify-content:space-between;">
+                <button class="btn-small" style="width:30%">&lt; Anterior</button>
+                <button class="btn-small" style="width:30%">Imprimir</button>
+                <button class="btn-small" style="width:30%">Siguiente &gt;</button>
+            </div>
+        </div>
+    </div>
 
     <div id="scopeModal" class="modal"><div class="modal-content">
         <span class="close-modal" onclick="closeScope()">&times;</span>
@@ -154,7 +184,7 @@
     <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZAR</h2><p>Total: $ 85.00</p><button class="btn-full">GENERAR</button></div></div>
     <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>IA</h2><p>Salud: 85%</p></div></div>
     <div id="topologyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('topologyModal')">&times;</span><h2>CAN BUS</h2><p>ECU ● OK</p></div></div>
-    <div id="scopeModalXX" class="modal"></div> <div id="freezeModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('freezeModal')">&times;</span><h2>FREEZE</h2><p>P0300 - Random Misfire</p></div></div>
+    <div id="scopeModalXX" class="modal"></div> 
     <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Nissan Sentra 2018</p></div></div>
     <div id="serviceModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('serviceModal')">&times;</span><h2>SERVICIO</h2><button class="btn-full" onclick="alert('Reset de Aceite Exitoso')">OIL RESET</button></div></div>
     <div id="historyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('historyModal')">&times;</span><h2>HISTORIAL</h2><p>Log 12/12 - OK</p></div></div>
@@ -218,7 +248,6 @@
             updateAllData("--", "--", "OFFLINE", false);
         }
 
-        // --- LÓGICA OSCILOSCOPIO AVANZADA (v6.3.1) ---
         function openScope() {
             openModal('scopeModal');
             resetScope();
@@ -231,72 +260,33 @@
 
         function resetScope() {
             if(scopeTimer) clearInterval(scopeTimer);
-            
             const sensor = document.getElementById('scopeSensor').value;
             const canvas = document.getElementById('scopeCanvas');
             const ctx = canvas.getContext('2d');
             const label = document.getElementById('scopeLabel');
-            
             label.innerText = "Monitor: " + sensor + " (Live)";
-            
-            let x = 0;
-            let y = 0;
-            
-            // Limpiar inicial
-            ctx.fillStyle = "#000"; 
-            ctx.fillRect(0,0,300,150);
+            let x = 0; let y = 0;
+            ctx.fillStyle = "#000"; ctx.fillRect(0,0,300,150);
 
             scopeTimer = setInterval(() => {
-                x += 3; // Velocidad de barrido
-                if(x > 300) {
-                    x = 0;
-                    ctx.fillStyle = "rgba(0,0,0,0.15)"; // Barrido tipo fósforo
-                    ctx.fillRect(0,0,300,150);
-                }
-
-                // Generador de ondas según Sensor seleccionado
-                const t = Date.now() / 1000; // Tiempo base
-                
+                x += 3; 
+                if(x > 300) { x = 0; ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.fillRect(0,0,300,150); }
+                const t = Date.now() / 1000;
                 switch(sensor) {
-                    case 'O2': // Onda Senoidal Lenta
-                        y = 75 + Math.sin(t * 2) * 40 + (Math.random() * 5); 
-                        break;
-                    case 'CKP': // Onda Senoidal Rápida
-                        y = 75 + Math.sin(t * 20) * 50; 
-                        break;
-                    case 'CMP': // Onda Cuadrada
-                        y = (Math.sin(t * 10) > 0) ? 40 : 110;
-                        break;
-                    case 'MAF': // Señal con variación rápida
-                        y = 75 + Math.sin(t * 5) * 30 + (Math.random() * 10);
-                        break;
-                    case 'TPS': // Rampa variable (aceleración simulada)
-                        y = 120 - (Math.sin(t * 0.5) * 40 + 40);
-                        break;
-                    case 'MAP': // Señal estable con ruido
-                        y = 60 + (Math.random() * 10);
-                        break;
-                    case 'KS': // Plano con picos repentinos
-                        y = 75; 
-                        if(Math.random() > 0.95) y -= 50 * Math.random();
-                        break;
-                    case 'ABS': // Senoidal media constante
-                        y = 75 + Math.sin(t * 15) * 40;
-                        break;
-                    case 'INJ': // Pulso de inyección (Negativo)
-                        y = (Math.sin(t * 15) > 0.8) ? 100 : 20; 
-                        break;
-                    case 'IG': // Pico inductivo
-                        y = 75;
-                        if(Math.random() > 0.9) y = 10; // Disparo
-                        break;
-                    default: 
-                        y = 75;
+                    case 'O2': y = 75 + Math.sin(t * 2) * 40 + (Math.random() * 5); break;
+                    case 'CKP': y = 75 + Math.sin(t * 20) * 50; break;
+                    case 'CMP': y = (Math.sin(t * 10) > 0) ? 40 : 110; break;
+                    case 'MAF': y = 75 + Math.sin(t * 5) * 30 + (Math.random() * 10); break;
+                    case 'TPS': y = 120 - (Math.sin(t * 0.5) * 40 + 40); break;
+                    case 'MAP': y = 60 + (Math.random() * 10); break;
+                    case 'KS': y = 75; if(Math.random() > 0.95) y -= 50 * Math.random(); break;
+                    case 'ABS': y = 75 + Math.sin(t * 15) * 40; break;
+                    case 'INJ': y = (Math.sin(t * 15) > 0.8) ? 100 : 20; break;
+                    case 'IG': y = 75; if(Math.random() > 0.9) y = 10; break;
+                    default: y = 75;
                 }
-                
-                ctx.fillStyle = "#00ff9d";
-                ctx.fillRect(x, y, 3, 3); // Dibujar punto
-            }, 20); // 50 FPS aprox
+                ctx.fillStyle = "#00ff9d"; ctx.fillRect(x, y, 3, 3);
+            }, 20);
         }
 
         async function connectBluetooth() {
