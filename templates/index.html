@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.4.0</title>
+    <title>AutoFix PRO v6.5.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -45,23 +45,34 @@
         .data-table th { color: var(--main-color); border-bottom: 1px solid #444; padding: 8px; }
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
         .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
+        
+        /* ESTILOS NUEVOS PARA SERVICIO v6.5.0 */
+        .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .service-btn { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; }
+        .service-btn:active { background: #30363d; transform: scale(0.95); }
+        .service-icon { font-size: 1.8rem; margin-bottom: 5px; color: var(--main-color); }
+        .wizard-step { display: none; text-align: center; }
+        .wizard-active { display: block; }
+        .progress-bar-bg { width: 100%; background: #333; height: 8px; border-radius: 4px; margin-top: 20px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: var(--neon-green); width: 0%; transition: width 0.5s; }
+        
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.4.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.5.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.4.0 (FREEZE MODE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.5.0 (SERVICE MASTER)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v6.4.0</span></div>
+        <div class="brand">AutoFix <span>PRO v6.5.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -94,18 +105,75 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.4.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.5.0 Ready.</div></div>
+
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('serviceModal')">&times;</span>
+            <h2 style="color:var(--neon-green)">FUNCIONES DE SERVICIO</h2>
+            <div class="service-grid">
+                <div class="service-btn" onclick="startWizard('OIL')"><span class="service-icon">🛢️</span><small>OIL RESET</small></div>
+                <div class="service-btn" onclick="startWizard('EPB')"><span class="service-icon">🅿️</span><small>EPB (Frenos)</small></div>
+                <div class="service-btn" onclick="startWizard('SAS')"><span class="service-icon">☸️</span><small>SAS (Volante)</small></div>
+                <div class="service-btn" onclick="startWizard('DPF')"><span class="service-icon">💨</span><small>DPF (Filtro)</small></div>
+                <div class="service-btn" onclick="startWizard('BMS')"><span class="service-icon">🔋</span><small>BMS (Batería)</small></div>
+                <div class="service-btn" onclick="startWizard('ABS')"><span class="service-icon">🛑</span><small>ABS (Purga)</small></div>
+                <div class="service-btn" onclick="startWizard('INJ')"><span class="service-icon">💉</span><small>INJECTOR</small></div>
+                <div class="service-btn" onclick="startWizard('TPS')"><span class="service-icon">🦋</span><small>TPS (Acel)</small></div>
+                <div class="service-btn" onclick="startWizard('TPMS')"><span class="service-icon">🛞</span><small>TPMS</small></div>
+                <div class="service-btn" onclick="startWizard('GEAR')"><span class="service-icon">⚙️</span><small>CAJA</small></div>
+                <div class="service-btn" onclick="startWizard('IMMO')"><span class="service-icon">🔑</span><small>IMMO</small></div>
+                <div class="service-btn" onclick="startWizard('SUS')"><span class="service-icon">🎈</span><small>SUSPENSIÓN</small></div>
+                <div class="service-btn" onclick="startWizard('SUN')"><span class="service-icon">☀️</span><small>TECHO</small></div>
+                <div class="service-btn" onclick="startWizard('AFS')"><span class="service-icon">💡</span><small>LUCES</small></div>
+                <div class="service-btn" onclick="startWizard('EGR')"><span class="service-icon">♻️</span><small>EGR</small></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wizardModal" class="modal" style="z-index: 210;">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-modal" onclick="closeModal('wizardModal')">&times;</span>
+            <h2 id="wizTitle" style="color:var(--main-color)">ASISTENTE</h2>
+            
+            <div id="wizStep1" class="wizard-step">
+                <p id="wizInstr" style="color:#ccc; font-size:1.1rem; margin: 20px 0;">Instrucciones...</p>
+                <div style="background:rgba(255,0,0,0.2); border:1px solid red; padding:10px; margin-bottom:20px;">
+                    <strong style="color:red">⚠ ADVERTENCIA:</strong><br>
+                    No apague el motor ni desconecte el scanner durante el proceso.
+                </div>
+                <button class="btn-full" onclick="nextStep(2)">CONTINUAR / ENTENDIDO</button>
+            </div>
+
+            <div id="wizStep2" class="wizard-step">
+                <p>Seleccione una función:</p>
+                <button class="btn-full" style="background:#333; margin-bottom:10px;" onclick="executeAction('RESET/ABRIR')">EJECUTAR / ABRIR</button>
+                <button class="btn-full" style="background:#333;" onclick="executeAction('CERRAR/CALIBRAR')">CERRAR / CALIBRAR</button>
+            </div>
+
+            <div id="wizStep3" class="wizard-step">
+                <p>Comunicando con ECU...</p>
+                <p style="font-size:0.8rem; color:#888;">Protocolo UDS: Security Access Grant...</p>
+                <div class="progress-bar-bg"><div id="wizBar" class="progress-bar-fill"></div></div>
+            </div>
+
+            <div id="wizStep4" class="wizard-step">
+                <div style="font-size:4rem; margin:20px 0;">✅</div>
+                <h3 style="color:var(--neon-green)">¡PROCEDIMIENTO EXITOSO!</h3>
+                <p>La operación se ha completado correctamente.</p>
+                <button class="btn-full" onclick="closeModal('wizardModal')">FINALIZAR</button>
+            </div>
+        </div>
+    </div>
 
     <div id="freezeModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('freezeModal')">&times;</span>
             <h2 style="color:var(--neon-amber); border-bottom:1px solid #333; padding-bottom:10px;">CUADRO CONGELADO</h2>
-            
             <div style="background:#1a1a1a; padding:10px; border-radius:5px; margin-bottom:15px; text-align:left;">
                 <p style="margin:5px 0;"><strong>Código Causante:</strong> <span style="color:var(--neon-red); font-size:1.1rem;">P0300</span> (Fallo de Encendido Aleatorio)</p>
                 <p style="margin:5px 0;"><strong>Estado:</strong> <span style="color:#ffcc00;">ALMACENADO</span></p>
             </div>
-
             <h3 style="text-align:left; font-size:1rem; color:#888;">SNAPSHOT DE SENSORES</h3>
             <table class="data-table">
                 <tr><th>PARÁMETRO</th><th>VALOR REGISTRADO</th></tr>
@@ -117,7 +185,6 @@
                 <tr><td>Posición Acelerador</td><td style="color:var(--main-color)">32 %</td></tr>
                 <tr><td>Presión Múltiple (MAP)</td><td style="color:var(--main-color)">45 kPa</td></tr>
             </table>
-            
             <div style="margin-top:15px; display:flex; justify-content:space-between;">
                 <button class="btn-small" style="width:30%">&lt; Anterior</button>
                 <button class="btn-small" style="width:30%">Imprimir</button>
@@ -186,7 +253,7 @@
     <div id="topologyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('topologyModal')">&times;</span><h2>CAN BUS</h2><p>ECU ● OK</p></div></div>
     <div id="scopeModalXX" class="modal"></div> 
     <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Nissan Sentra 2018</p></div></div>
-    <div id="serviceModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('serviceModal')">&times;</span><h2>SERVICIO</h2><button class="btn-full" onclick="alert('Reset de Aceite Exitoso')">OIL RESET</button></div></div>
+    <div id="serviceModalXX" class="modal"></div> 
     <div id="historyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('historyModal')">&times;</span><h2>HISTORIAL</h2><p>Log 12/12 - OK</p></div></div>
     <div id="hexModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('hexModal')">&times;</span><h2>HEX</h2><textarea class="input-dark">00 FF A1 B2...</textarea></div></div>
 
@@ -197,6 +264,24 @@
         let hardwareMode = 'sim';
         let bleDevice = null;
         let scopeTimer = null;
+
+        const servicesData = {
+            'OIL': { title: 'RESET ACEITE', instr: 'Encienda el contacto (ON). Motor apagado.' },
+            'EPB': { title: 'FRENOS EPB', instr: 'Suelte el freno de mano. Batería > 12V.' },
+            'SAS': { title: 'CALIBRAR VOLANTE', instr: 'Coloque volante recto (0 grados).' },
+            'DPF': { title: 'REGENERAR DPF', instr: 'Motor encendido. Temperatura > 70°C.' },
+            'BMS': { title: 'BATERÍA BMS', instr: 'Batería nueva instalada. Contacto ON.' },
+            'ABS': { title: 'PURGA ABS', instr: 'Pise el freno. Se activará la bomba.' },
+            'INJ': { title: 'INYECTORES', instr: 'Ingrese códigos de inyectores nuevos.' },
+            'TPS': { title: 'CUERPO ACELERACIÓN', instr: 'Limpie la mariposa antes de iniciar.' },
+            'TPMS': { title: 'RESET TPMS', instr: 'Ajuste presión de neumáticos primero.' },
+            'GEAR': { title: 'APRENDIZAJE CAJA', instr: 'Procedimiento de marcha en carretera.' },
+            'IMMO': { title: 'LLAVES IMMO', instr: 'Tenga todas las llaves presentes.' },
+            'SUS': { title: 'SUSPENSIÓN', instr: 'Vehículo en superficie plana.' },
+            'SUN': { title: 'TECHO SOLAR', instr: 'Cierre el techo completamente.' },
+            'AFS': { title: 'FAROS AFS', instr: 'Nivelar vehículo frente a pared.' },
+            'EGR': { title: 'ADAPTACIÓN EGR', instr: 'Válvula limpia o reemplazada.' }
+        };
 
         async function attemptLogin() {
             const email = document.getElementById('login-email').value.trim();
@@ -246,6 +331,38 @@
 
         function setStatusOffline() { 
             updateAllData("--", "--", "OFFLINE", false);
+        }
+
+        // --- LÓGICA WIZARD DE SERVICIOS (v6.5.0) ---
+        function startWizard(serviceType) {
+            closeModal('serviceModal');
+            openModal('wizardModal');
+            const data = servicesData[serviceType];
+            document.getElementById('wizTitle').innerText = data.title;
+            document.getElementById('wizInstr').innerText = data.instr;
+            nextStep(1); // Iniciar en paso 1
+        }
+
+        function nextStep(step) {
+            // Ocultar todos
+            for(let i=1; i<=4; i++) document.getElementById('wizStep'+i).style.display = 'none';
+            // Mostrar actual
+            document.getElementById('wizStep'+step).style.display = 'block';
+        }
+
+        function executeAction(actionName) {
+            nextStep(3); // Mostrar barra de progreso
+            let width = 0;
+            const bar = document.getElementById('wizBar');
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    nextStep(4); // Mostrar éxito
+                } else {
+                    width++;
+                    bar.style.width = width + '%';
+                }
+            }, 30); // Simular 3 segundos de proceso
         }
 
         function openScope() {
