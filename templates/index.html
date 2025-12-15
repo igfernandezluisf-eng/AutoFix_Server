@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.5.0</title>
+    <title>AutoFix PRO v6.6.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -18,7 +18,9 @@
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
         .dot.active { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
         .dot.blue { background: #0072ff; box-shadow: 0 0 10px #0072ff; animation: pulse-blue 1s infinite; }
+        .dot.rec { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); animation: pulse-red 1s infinite; }
         @keyframes pulse-blue { 50% { opacity: 0.5; } }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 600px; margin-bottom: 15px; }
         .card { background: var(--panel-bg); border-radius: 15px; padding: 15px; display: flex; flex-direction: column; align-items: center; border: 1px solid #222; }
         .gauge-container { position: relative; width: 100px; height: 100px; }
@@ -32,6 +34,7 @@
         .btn-green { color: var(--neon-green); border-color: rgba(0,255,157,0.3); }
         .btn-red { color: var(--neon-red); border-color: rgba(255,0,85,0.3); }
         .btn-amber { color: var(--neon-amber); border-color: rgba(255,170,0,0.3); }
+        .rec-active { background: #3a0000 !important; border-color: var(--neon-red) !important; color: var(--neon-red) !important; }
         .scan-btn { background: linear-gradient(135deg, var(--main-color), #0072ff); color: white; border: none; width: 100%; max-width: 600px; padding: 18px; font-size: 1.1rem; font-weight: bold; border-radius: 12px; margin-bottom: 15px; }
         .console { width: 100%; max-width: 600px; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: #ccc; }
         .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
@@ -46,7 +49,7 @@
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
         .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
         
-        /* ESTILOS NUEVOS PARA SERVICIO v6.5.0 */
+        /* ESTILOS SERVICIO */
         .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .service-btn { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; }
         .service-btn:active { background: #30363d; transform: scale(0.95); }
@@ -56,23 +59,29 @@
         .progress-bar-bg { width: 100%; background: #333; height: 8px; border-radius: 4px; margin-top: 20px; overflow: hidden; }
         .progress-bar-fill { height: 100%; background: var(--neon-green); width: 0%; transition: width 0.5s; }
         
+        /* ESTILOS PLAYER DATA LOG */
+        .player-controls { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        .player-btn { background: #333; border: none; color: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        .timeline { width: 100%; height: 5px; background: #333; margin-top: 20px; position: relative; }
+        .timeline-progress { height: 100%; background: var(--neon-amber); width: 0%; }
+
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.5.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.6.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.5.0 (SERVICE MASTER)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.6.0 (DATA LOGGING)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v6.5.0</span></div>
+        <div class="brand">AutoFix <span>PRO v6.6.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -88,7 +97,7 @@
         <button class="action-btn btn-amber" onclick="openModal('inventoryModal')"><span class="material-icons-round">inventory_2</span>INV</button>
         <button class="action-btn" onclick="openModal('crmModal')"><span class="material-icons-round">groups</span>CRM</button>
         <button class="action-btn btn-green" onclick="openModal('predictModal')"><span class="material-icons-round">auto_graph</span>PRED</button>
-        <button class="action-btn btn-red" onclick="toggleRec()"><span class="material-icons-round">fiber_manual_record</span>REC</button>
+        <button id="btnRec" class="action-btn btn-red" onclick="toggleRec()"><span class="material-icons-round">fiber_manual_record</span>REC</button>
         <button class="action-btn" onclick="openModal('topologyModal')"><span class="material-icons-round">hub</span>NET</button>
         <button class="action-btn" onclick="openModal('freezeModal')"><span class="material-icons-round">ac_unit</span>FREEZE</button>
         <button class="action-btn btn-green" onclick="openModal('serviceModal')"><span class="material-icons-round">build</span>SERV</button>
@@ -99,13 +108,34 @@
         <button class="action-btn btn-green" onclick="openModal('testsModal')"><span class="material-icons-round">bolt</span>TEST</button>
         <button class="action-btn btn-amber" onclick="testSecurity()"><span class="material-icons-round">lock_open</span>SEGURIDAD</button>
         <button class="action-btn btn-red" onclick="openHexEditor()"><span class="material-icons-round">memory</span>HEX</button>
-        <button class="action-btn" onclick="openModal('historyModal')"><span class="material-icons-round">history</span>HIST</button>
+        <button class="action-btn" onclick="openHistory()"><span class="material-icons-round">history</span>HIST</button>
         <button class="action-btn" onclick="openModal('settingsModal')"><span class="material-icons-round">settings</span>CONF</button>
         <button class="action-btn btn-blue" onclick="connectOrSync()"><span class="material-icons-round">bluetooth</span>SYNC</button>
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.5.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v6.6.0 Ready.</div></div>
+
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('historyModal')">&times;</span>
+            <h2>HISTORIAL DE GRABACIONES</h2>
+            
+            <div id="logList" style="margin-bottom: 20px; text-align: left;">
+                <p style="color:#888;">No hay grabaciones recientes.</p>
+            </div>
+
+            <div id="logPlayer" style="display:none; background:#222; padding:15px; border-radius:10px;">
+                <h3 id="playTitle" style="color:var(--neon-green)">Reproduciendo...</h3>
+                <div class="timeline"><div id="playProgress" class="timeline-progress"></div></div>
+                <div class="player-controls">
+                    <button class="player-btn" onclick="playLog()">▶ PLAY</button>
+                    <button class="player-btn" onclick="pauseLog()">⏸ PAUSE</button>
+                    <button class="player-btn" onclick="stopLog()">⏹ STOP</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="serviceModal" class="modal">
         <div class="modal-content">
@@ -135,32 +165,23 @@
         <div class="modal-content" style="text-align: center;">
             <span class="close-modal" onclick="closeModal('wizardModal')">&times;</span>
             <h2 id="wizTitle" style="color:var(--main-color)">ASISTENTE</h2>
-            
             <div id="wizStep1" class="wizard-step">
                 <p id="wizInstr" style="color:#ccc; font-size:1.1rem; margin: 20px 0;">Instrucciones...</p>
-                <div style="background:rgba(255,0,0,0.2); border:1px solid red; padding:10px; margin-bottom:20px;">
-                    <strong style="color:red">⚠ ADVERTENCIA:</strong><br>
-                    No apague el motor ni desconecte el scanner durante el proceso.
-                </div>
-                <button class="btn-full" onclick="nextStep(2)">CONTINUAR / ENTENDIDO</button>
+                <div style="background:rgba(255,0,0,0.2); border:1px solid red; padding:10px; margin-bottom:20px;"><strong style="color:red">⚠ ADVERTENCIA:</strong><br>No apague el motor ni desconecte el scanner.</div>
+                <button class="btn-full" onclick="nextStep(2)">CONTINUAR</button>
             </div>
-
             <div id="wizStep2" class="wizard-step">
                 <p>Seleccione una función:</p>
                 <button class="btn-full" style="background:#333; margin-bottom:10px;" onclick="executeAction('RESET/ABRIR')">EJECUTAR / ABRIR</button>
                 <button class="btn-full" style="background:#333;" onclick="executeAction('CERRAR/CALIBRAR')">CERRAR / CALIBRAR</button>
             </div>
-
             <div id="wizStep3" class="wizard-step">
                 <p>Comunicando con ECU...</p>
-                <p style="font-size:0.8rem; color:#888;">Protocolo UDS: Security Access Grant...</p>
                 <div class="progress-bar-bg"><div id="wizBar" class="progress-bar-fill"></div></div>
             </div>
-
             <div id="wizStep4" class="wizard-step">
                 <div style="font-size:4rem; margin:20px 0;">✅</div>
                 <h3 style="color:var(--neon-green)">¡PROCEDIMIENTO EXITOSO!</h3>
-                <p>La operación se ha completado correctamente.</p>
                 <button class="btn-full" onclick="closeModal('wizardModal')">FINALIZAR</button>
             </div>
         </div>
@@ -240,21 +261,16 @@
     </div></div>
 
     <div id="odoModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('odoModal')">&times;</span><h2>ODÓMETRO</h2><div class="odo-display" id="odo-current">---</div><input type="number" id="odo-new" class="input-dark" placeholder="Nuevo Km"><button class="btn-full" onclick="writeOdometer()">PROGRAMAR</button></div></div>
-    
     <div id="settingsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('settingsModal')">&times;</span><h2>CONFIGURACIÓN</h2>
         <label>Interface Hardware</label><select id="conf-hw" class="input-dark"><option value="sim">🔌 Modo Simulación</option><option value="elm">📶 ELM327 BLE (Real)</option><option value="j2534">📡 J2534 Passthru</option><option value="usb">💻 Cable USB</option></select>
         <label>Motor de IA</label><select id="conf-ai" class="input-dark"><option value="gemini">✨ Google Gemini Ultra</option><option value="gpt">🧠 GPT-4 Turbo</option></select>
         <label>Taller</label><input type="text" class="input-dark" value="Taller Principal"><button class="btn-full" onclick="saveSettings()">GUARDAR</button></div></div>
-
     <div id="inventoryModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('inventoryModal')">&times;</span><h2>INVENTARIO</h2><table class="data-table"><tr><th>Item</th><th>Stock</th></tr><tr><td>Filtro 5W30</td><td>12</td></tr><tr><td>Bujía NGK</td><td>24</td></tr></table></div></div>
     <div id="crmModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('crmModal')">&times;</span><h2>CRM</h2><p>Juan P. - Fiesta 2015 (Listo)</p></div></div>
     <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZAR</h2><p>Total: $ 85.00</p><button class="btn-full">GENERAR</button></div></div>
     <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>IA</h2><p>Salud: 85%</p></div></div>
     <div id="topologyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('topologyModal')">&times;</span><h2>CAN BUS</h2><p>ECU ● OK</p></div></div>
-    <div id="scopeModalXX" class="modal"></div> 
     <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Nissan Sentra 2018</p></div></div>
-    <div id="serviceModalXX" class="modal"></div> 
-    <div id="historyModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('historyModal')">&times;</span><h2>HISTORIAL</h2><p>Log 12/12 - OK</p></div></div>
     <div id="hexModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('hexModal')">&times;</span><h2>HEX</h2><textarea class="input-dark">00 FF A1 B2...</textarea></div></div>
 
     <script>
@@ -264,6 +280,13 @@
         let hardwareMode = 'sim';
         let bleDevice = null;
         let scopeTimer = null;
+        
+        // VARIABLES DATA LOG (v6.6.0)
+        let isRecording = false;
+        let logSession = [];
+        let logTimer = null;
+        let savedLogs = []; // Almacenamiento temporal de logs
+        let playInterval = null;
 
         const servicesData = {
             'OIL': { title: 'RESET ACEITE', instr: 'Encienda el contacto (ON). Motor apagado.' },
@@ -302,7 +325,7 @@
         }
 
         function mainLoop() { 
-            if (hardwareMode === 'sim') updateFromRender(); 
+            if (hardwareMode === 'sim' && !playInterval) updateFromRender(); 
         }
 
         async function updateFromRender() {
@@ -327,42 +350,125 @@
                 document.getElementById('s-batt').innerText = (12.4 + Math.random()*0.5).toFixed(1) + " V";
                 document.getElementById('s-map').innerText = (30 + Math.random()*5).toFixed(0) + " kPa";
             }
+
+            // LÓGICA DE GRABACIÓN (v6.6.0)
+            if(isRecording) {
+                logSession.push({rpm: rpm, temp: temp});
+                const seconds = logSession.length;
+                const min = Math.floor(seconds / 60);
+                const sec = seconds % 60;
+                document.getElementById('conn-text').innerText = "REC " + (min<10?'0':'')+min + ":" + (sec<10?'0':'')+sec;
+            }
         }
 
         function setStatusOffline() { 
             updateAllData("--", "--", "OFFLINE", false);
         }
 
-        // --- LÓGICA WIZARD DE SERVICIOS (v6.5.0) ---
+        // --- SISTEMA DATA LOG (v6.6.0) ---
+        function toggleRec() {
+            const btn = document.getElementById('btnRec');
+            if(!isRecording) {
+                // Iniciar Grabación
+                isRecording = true;
+                logSession = [];
+                btn.className = "action-btn rec-active";
+                alert("GRABACIÓN INICIADA\nConduzca el vehículo para capturar datos.");
+                document.getElementById('conn-dot').className = 'dot rec';
+            } else {
+                // Detener Grabación
+                isRecording = false;
+                btn.className = "action-btn btn-red";
+                document.getElementById('conn-dot').className = 'dot active';
+                if(logSession.length > 5) {
+                    const name = "Log " + new Date().toLocaleTimeString();
+                    savedLogs.push({name: name, data: [...logSession]});
+                    alert("GRABACIÓN GUARDADA:\n" + name + "\n(" + logSession.length + " segundos)");
+                } else {
+                    alert("Grabación muy corta, no se guardó.");
+                }
+            }
+        }
+
+        function openHistory() {
+            openModal('historyModal');
+            const list = document.getElementById('logList');
+            list.innerHTML = "";
+            if(savedLogs.length === 0) {
+                list.innerHTML = '<p style="color:#888;">No hay grabaciones recientes.</p>';
+                return;
+            }
+            savedLogs.forEach((log, index) => {
+                list.innerHTML += `<div style="background:#333; padding:10px; margin:5px 0; border-radius:5px; cursor:pointer;" onclick="loadLog(${index})">
+                    <strong>${log.name}</strong><br><small>${log.data.length} segundos</small>
+                </div>`;
+            });
+        }
+
+        let currentPlayLog = null;
+        function loadLog(index) {
+            currentPlayLog = savedLogs[index].data;
+            document.getElementById('logList').style.display = 'none';
+            document.getElementById('logPlayer').style.display = 'block';
+            document.getElementById('playTitle').innerText = savedLogs[index].name;
+        }
+
+        function playLog() {
+            if(!currentPlayLog) return;
+            let i = 0;
+            const bar = document.getElementById('playProgress');
+            if(playInterval) clearInterval(playInterval);
+            
+            playInterval = setInterval(() => {
+                if(i >= currentPlayLog.length) {
+                    clearInterval(playInterval);
+                    return;
+                }
+                const data = currentPlayLog[i];
+                updateAllData(data.rpm, data.temp, "PLAYBACK", true);
+                bar.style.width = ((i / currentPlayLog.length) * 100) + "%";
+                i++;
+            }, 1000); // Velocidad 1x (1 segundo por dato)
+        }
+
+        function pauseLog() {
+            if(playInterval) clearInterval(playInterval);
+        }
+
+        function stopLog() {
+            pauseLog();
+            document.getElementById('logPlayer').style.display = 'none';
+            document.getElementById('logList').style.display = 'block';
+            setStatusOffline();
+        }
+
         function startWizard(serviceType) {
             closeModal('serviceModal');
             openModal('wizardModal');
             const data = servicesData[serviceType];
             document.getElementById('wizTitle').innerText = data.title;
             document.getElementById('wizInstr').innerText = data.instr;
-            nextStep(1); // Iniciar en paso 1
+            nextStep(1);
         }
 
         function nextStep(step) {
-            // Ocultar todos
             for(let i=1; i<=4; i++) document.getElementById('wizStep'+i).style.display = 'none';
-            // Mostrar actual
             document.getElementById('wizStep'+step).style.display = 'block';
         }
 
         function executeAction(actionName) {
-            nextStep(3); // Mostrar barra de progreso
+            nextStep(3);
             let width = 0;
             const bar = document.getElementById('wizBar');
             const interval = setInterval(() => {
                 if (width >= 100) {
                     clearInterval(interval);
-                    nextStep(4); // Mostrar éxito
+                    nextStep(4);
                 } else {
                     width++;
                     bar.style.width = width + '%';
                 }
-            }, 30); // Simular 3 segundos de proceso
+            }, 30);
         }
 
         function openScope() {
@@ -421,8 +527,10 @@
         function startDummyBLELoop(name) {
             let fakeRpm = 800;
             setInterval(() => {
-                fakeRpm += Math.floor(Math.random() * 100) - 50;
-                updateAllData(fakeRpm, 88, "BLE: " + name, true);
+                if(!isRecording && !playInterval) { // Solo si no estamos grabando ni reproduciendo
+                    fakeRpm += Math.floor(Math.random() * 100) - 50;
+                    updateAllData(fakeRpm, 88, "BLE: " + name, true);
+                }
             }, 1000);
         }
 
@@ -436,7 +544,6 @@
         function toggleVoice() { alert("Escuchando comandos por voz..."); }
         function startScan() { alert("Escanéo OBD2 Iniciado..."); setTimeout(()=>alert("Sin códigos de falla (DTC) encontrados."), 2000); }
         function testSecurity() { alert("Bypassing Security Gateway... OK"); }
-        function toggleRec() { alert("Grabando Log de Datos en nube..."); }
         function openHexEditor(){openModal('hexModal')}
     </script>
 </body>
