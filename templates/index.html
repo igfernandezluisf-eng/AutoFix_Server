@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v6.8.0</title>
+    <title>AutoFix PRO v7.1.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -38,7 +38,7 @@
         .scan-btn { background: linear-gradient(135deg, var(--main-color), #0072ff); color: white; border: none; width: 100%; max-width: 600px; padding: 18px; font-size: 1.1rem; font-weight: bold; border-radius: 12px; margin-bottom: 15px; }
         .console { width: 100%; max-width: 600px; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: #ccc; }
         .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
-        .modal-content { background: #141419; margin: 5% auto; padding: 20px; border: 1px solid #444; width: 90%; max-width: 500px; border-radius: 12px; position: relative; }
+        .modal-content { background: #141419; margin: 5% auto; padding: 20px; border: 1px solid #444; width: 90%; max-width: 600px; border-radius: 12px; position: relative; }
         .close-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #fff; }
         .input-dark, select.input-dark { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 12px; margin: 10px 0; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
         label { display: block; text-align: left; color: #888; font-size: 0.8rem; margin-top: 10px; }
@@ -61,20 +61,42 @@
         .timeline { width: 100%; height: 5px; background: #333; margin-top: 20px; position: relative; }
         .timeline-progress { height: 100%; background: var(--neon-amber); width: 0%; }
         
-        /* ESTILOS TOPOLOGÍA V6.8.0 */
-        .topology-container { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
-        .gateway-node { background: #333; border: 2px solid #fff; color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; position: relative; }
-        .gateway-node::after { content: ''; position: absolute; bottom: -20px; left: 50%; width: 2px; height: 20px; background: #555; }
-        .bus-line { width: 90%; height: 2px; background: #555; margin-bottom: 20px; position: relative; }
-        .module-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
-        .module-node { padding: 10px 5px; border-radius: 5px; text-align: center; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: 1px solid transparent; transition: 0.2s; color: #000; }
-        .mod-green { background: var(--neon-green); box-shadow: 0 0 5px var(--neon-green); }
-        .mod-orange { background: var(--neon-amber); box-shadow: 0 0 5px var(--neon-amber); }
-        .mod-red { background: var(--neon-red); box-shadow: 0 0 5px var(--neon-red); color: #fff; }
-        .mod-grey { background: #333; border-color: #555; color: #777; }
-        .topology-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; font-size: 0.7rem; justify-content: center; }
+        /* ESTILOS TOPOLOGÍA ÁRBOL (v7.1.0) */
+        .topology-tree { display: flex; flex-direction: column; align-items: center; position: relative; padding-bottom: 20px; }
+        .gateway-icon { font-size: 2rem; color: #fff; background: #333; padding: 10px; border-radius: 50%; border: 2px solid var(--main-color); z-index: 2; margin-bottom: 10px; }
+        .trunk-line { width: 4px; height: 30px; background: #555; margin-bottom: 0; }
+        .bus-container { display: flex; justify-content: space-between; width: 100%; gap: 20px; position: relative; }
+        .bus-branch { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .bus-branch::before { content: ''; position: absolute; top: 0; width: 50%; height: 4px; background: #555; } 
+        /* Conector horizontal superior */
+        .bus-container .bus-branch:first-child::before { right: 0; border-top-left-radius: 5px; }
+        .bus-container .bus-branch:last-child::before { left: 0; border-top-right-radius: 5px; }
+        
+        .branch-line { width: 4px; height: 100%; background: #555; position: absolute; top: 0; bottom: 0; z-index: 0; }
+        .hs-can { background: #0072ff; } /* Azul - Alta Velocidad */
+        .ms-can { background: #00ff9d; } /* Verde - Baja Velocidad */
+        
+        .node-wrapper { margin: 10px 0; z-index: 1; width: 100%; display: flex; justify-content: center; }
+        .module-node { padding: 8px 15px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; width: 80px; text-align: center; color: #000; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.2s; position: relative; }
+        .module-node:active { transform: scale(0.95); }
+        /* Conector pequeño del nodo a la línea principal */
+        .module-node::before { content: ''; position: absolute; top: 50%; width: 15px; height: 2px; background: #777; }
+        .left-branch .module-node::before { right: -15px; }
+        .right-branch .module-node::before { left: -15px; }
+
+        .mod-green { background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); }
+        .mod-orange { background: var(--neon-amber); box-shadow: 0 0 8px var(--neon-amber); }
+        .mod-red { background: var(--neon-red); box-shadow: 0 0 8px var(--neon-red); color: white; }
+        .mod-grey { background: #333; color: #777; border-color: #555; }
+
+        .topology-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; font-size: 0.7rem; justify-content: center; border-top: 1px solid #333; padding-top: 10px; width: 100%; }
         .legend-item { display: flex; align-items: center; gap: 5px; }
         .legend-box { width: 12px; height: 12px; border-radius: 2px; }
+        
+        .hex-grid { font-family: 'Courier New', monospace; font-size: 0.8rem; display: grid; grid-template-columns: 50px 1fr 1fr; gap: 10px; text-align: left; height: 300px; overflow-y: auto; background: #000; padding: 10px; border: 1px solid #333; color: var(--neon-green); }
+        .hex-addr { color: #888; }
+        .hex-data { color: var(--main-color); letter-spacing: 2px; }
+        .hex-ascii { color: #aaa; }
 
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
@@ -82,17 +104,17 @@
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v6.8.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.1.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v6.8.0 (TOPOLOGY READY)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.1.0 (TOPOLOGY TREE)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v6.8.0</span></div>
+        <div class="brand">AutoFix <span>PRO v7.1.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -125,51 +147,85 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v6.8.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.1.0 Ready.</div></div>
 
     <div id="topologyModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <span class="close-modal" onclick="closeModal('topologyModal')">&times;</span>
-            <h2>TOPOLOGÍA CAN BUS</h2>
-            <div class="topology-container">
-                <div class="gateway-node">GATEWAY CENTRAL</div>
-                <div class="bus-line"></div>
-                <div id="topologyGrid" class="module-grid">
+            <h2 style="margin-bottom:5px;">TOPOLOGÍA CAN BUS</h2>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:20px;">GATEWAY CENTRAL (CGW)</p>
+            
+            <div class="topology-tree">
+                <div class="gateway-icon"><span class="material-icons-round" style="font-size:2rem;">router</span></div>
+                <div class="trunk-line"></div>
+                
+                <div class="bus-container">
+                    <div class="bus-branch left-branch">
+                        <div class="branch-line hs-can"></div>
+                        <div style="margin-bottom:10px; font-size:0.7rem; color:#0072ff; z-index:1; background:#000; padding:2px;">HS-CAN</div>
+                        <div id="hsCanList" style="width:100%;"></div>
                     </div>
+                    
+                    <div class="bus-branch right-branch">
+                        <div class="branch-line ms-can"></div>
+                        <div style="margin-bottom:10px; font-size:0.7rem; color:#00ff9d; z-index:1; background:#000; padding:2px;">MS-CAN</div>
+                        <div id="msCanList" style="width:100%;"></div>
+                    </div>
+                </div>
             </div>
+
             <div class="topology-legend">
                 <div class="legend-item"><div class="legend-box" style="background:var(--neon-green)"></div><span>ONLINE (OK)</span></div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--neon-amber)"></div><span>FALLA (DTC)</span></div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--neon-red)"></div><span>OFFLINE (ERR)</span></div>
                 <div class="legend-item"><div class="legend-box" style="background:#333; border:1px solid #555"></div><span>NO INSTALADO</span></div>
             </div>
-            <button class="btn-full" style="margin-top:15px;" onclick="openTopology()">🔄 ACTUALIZAR TOPOLOGÍA</button>
+            
+            <button class="btn-full" style="margin-top:15px;" onclick="openTopology()">🔄 RE-ESCANEAR RED</button>
+        </div>
+    </div>
+
+    <div id="hexModal" class="modal">
+        <div class="modal-content" style="width: 95%; max-width: 700px;">
+            <span class="close-modal" onclick="closeHex()">&times;</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h2 style="color:var(--neon-red)">EDITOR DE MEMORIA (EEPROM)</h2>
+                <div style="font-size:0.8rem; color:#888;">ADDR: 0x0000 - 0xFFFF</div>
+            </div>
+            <div class="hex-grid">
+                <div id="hexAddr"></div>
+                <div id="hexData"></div>
+                <div id="hexAscii"></div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:10px;">
+                <button class="btn-small" onclick="alert('DUMP Guardado en Log.')">GUARDAR BIN</button>
+                <button class="btn-small" style="background:#550000; border-color:red;" onclick="alert('Acceso Denegado: Requiere Llave de Seguridad.')">ESCRIBIR</button>
+            </div>
         </div>
     </div>
 
     <div id="freezeModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('freezeModal')">&times;</span>
-            <h2 style="color:var(--neon-amber); border-bottom:1px solid #333; padding-bottom:10px;">CUADRO CONGELADO</h2>
+            <h2 style="color:var(--neon-amber);">CUADRO CONGELADO</h2>
             <div style="background:#1a1a1a; padding:10px; border-radius:5px; margin-bottom:15px; text-align:left;">
                 <p style="margin:5px 0;"><strong>Código Causante:</strong> <span id="ff-code" style="color:var(--neon-red); font-size:1.1rem;">---</span> <span id="ff-desc">---</span></p>
                 <p style="margin:5px 0;"><strong>Estado:</strong> <span style="color:#ffcc00;">ALMACENADO</span></p>
             </div>
-            <h3 style="text-align:left; font-size:1rem; color:#888;">SNAPSHOT DE SENSORES</h3>
             <table class="data-table">
-                <tr><th>PARÁMETRO</th><th>VALOR REGISTRADO</th></tr>
+                <tr><th>PARÁMETRO</th><th>VALOR</th></tr>
                 <tr><td>RPM del Motor</td><td id="ff-rpm" style="color:var(--main-color)">---</td></tr>
                 <tr><td>Velocidad (VSS)</td><td id="ff-vss" style="color:var(--main-color)">---</td></tr>
                 <tr><td>Temperatura (ECT)</td><td id="ff-ect" style="color:var(--main-color)">---</td></tr>
-                <tr><td>Carga del Motor (LOAD)</td><td id="ff-load" style="color:var(--main-color)">---</td></tr>
-                <tr><td>Fuel Trim (Corto)</td><td id="ff-trim" style="color:var(--neon-red)">---</td></tr>
-                <tr><td>Posición Acelerador</td><td id="ff-tps" style="color:var(--main-color)">---</td></tr>
-                <tr><td>Presión Múltiple (MAP)</td><td id="ff-map" style="color:var(--main-color)">---</td></tr>
+                <tr><td>Carga (LOAD)</td><td id="ff-load" style="color:var(--main-color)">---</td></tr>
+                <tr><td>Fuel Trim</td><td id="ff-trim" style="color:var(--neon-red)">---</td></tr>
+                <tr><td>TPS</td><td id="ff-tps" style="color:var(--main-color)">---</td></tr>
+                <tr><td>MAP</td><td id="ff-map" style="color:var(--main-color)">---</td></tr>
             </table>
             <div style="margin-top:15px; display:flex; justify-content:space-between;">
-                <button class="btn-small" style="width:30%" onclick="openFreezeFrame()">&lt; Anterior</button>
+                <button class="btn-small" style="width:30%" onclick="openFreezeFrame()">&lt;</button>
                 <button class="btn-small" style="width:30%">Imprimir</button>
-                <button class="btn-small" style="width:30%" onclick="openFreezeFrame()">Siguiente &gt;</button>
+                <button class="btn-small" style="width:30%" onclick="openFreezeFrame()">&gt;</button>
             </div>
         </div>
     </div>
@@ -196,7 +252,7 @@
             <span class="close-modal" onclick="closeModal('serviceModal')">&times;</span>
             <h2 style="color:var(--neon-green)">FUNCIONES DE SERVICIO</h2>
             <div class="service-grid">
-                <div class="service-btn" onclick="startWizard('OIL')"><span class="service-icon">🛢️</span><small>OIL RESET</small></div>
+                <div class="service-btn" onclick="startWizard('OIL')"><span class="service-icon">🛢️</span><small>OIL</small></div>
                 <div class="service-btn" onclick="startWizard('EPB')"><span class="service-icon">🅿️</span><small>EPB</small></div>
                 <div class="service-btn" onclick="startWizard('SAS')"><span class="service-icon">☸️</span><small>SAS</small></div>
                 <div class="service-btn" onclick="startWizard('DPF')"><span class="service-icon">💨</span><small>DPF</small></div>
@@ -208,8 +264,8 @@
                 <div class="service-btn" onclick="startWizard('GEAR')"><span class="service-icon">⚙️</span><small>CAJA</small></div>
                 <div class="service-btn" onclick="startWizard('IMMO')"><span class="service-icon">🔑</span><small>IMMO</small></div>
                 <div class="service-btn" onclick="startWizard('SUS')"><span class="service-icon">🎈</span><small>SUS</small></div>
-                <div class="service-btn" onclick="startWizard('SUN')"><span class="service-icon">☀️</span><small>TECHO</small></div>
-                <div class="service-btn" onclick="startWizard('AFS')"><span class="service-icon">💡</span><small>LUCES</small></div>
+                <div class="service-btn" onclick="startWizard('SUN')"><span class="service-icon">☀️</span><small>SUN</small></div>
+                <div class="service-btn" onclick="startWizard('AFS')"><span class="service-icon">💡</span><small>AFS</small></div>
                 <div class="service-btn" onclick="startWizard('EGR')"><span class="service-icon">♻️</span><small>EGR</small></div>
             </div>
         </div>
@@ -297,7 +353,6 @@
     <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZAR</h2><p>Total: $ 85.00</p><button class="btn-full">GENERAR</button></div></div>
     <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>IA</h2><p>Salud: 85%</p></div></div>
     <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Nissan Sentra 2018</p></div></div>
-    <div id="hexModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('hexModal')">&times;</span><h2>HEX</h2><textarea class="input-dark">00 FF A1 B2...</textarea></div></div>
 
     <script>
         const API_URL = "https://autofix-server-7w12.onrender.com";
@@ -311,6 +366,7 @@
         let logTimer = null;
         let savedLogs = [];
         let playInterval = null;
+        let hexTimer = null;
 
         const servicesData = {
             'OIL': { title: 'RESET ACEITE', instr: 'Encienda el contacto (ON). Motor apagado.' },
@@ -338,38 +394,68 @@
             { code: 'P0217', desc: '(Sobrecalentamiento)', rpm: '3200', vss: '110', ect: '118', load: '75', trim: '-5 %', tps: '60', map: '80' }
         ];
 
-        // --- SISTEMA DE TOPOLOGÍA (v6.8.0) ---
-        const moduleNames = ["ECM", "TCM", "ABS", "SRS", "BCM", "IPC", "HVAC", "EPS", "EPB", "TPMS", "PDM", "DDM", "RDM", "LDM", "SAS", "IMMO", "RAD", "AMP", "SUN", "PAM"];
+        // MÓDULOS PARA EL ÁRBOL CAN (v7.1.0)
+        const modulesHS = ["ECM", "TCM", "ABS", "SRS", "BCM", "EPS", "TPMS", "EPB", "SAS", "IMMO"];
+        const modulesMS = ["IPC", "HVAC", "RAD", "AMP", "PDM", "DDM", "RDM", "LDM", "SUN", "PAM"];
 
         function openTopology() {
             openModal('topologyModal');
-            const grid = document.getElementById('topologyGrid');
-            grid.innerHTML = "";
+            const hsList = document.getElementById('hsCanList');
+            const msList = document.getElementById('msCanList');
+            hsList.innerHTML = "";
+            msList.innerHTML = "";
             
-            // Mezclar módulos para aleatoriedad
-            let shuffled = moduleNames.sort(() => 0.5 - Math.random());
-            
-            // Asignar estados fijos (5 de cada uno)
-            for(let i=0; i<20; i++) {
-                let statusClass = "";
-                let onClickAction = "";
+            // Función auxiliar para crear nodos
+            const createNode = (name) => {
+                let r = Math.random();
+                let statusClass = "mod-green";
+                let action = "alert('Módulo Online. Sin códigos.')";
                 
-                if(i < 5) { // 5 Verdes
-                    statusClass = "mod-green";
-                    onClickAction = "alert('Módulo Online. Sin códigos de error.')";
-                } else if(i < 10) { // 5 Naranjas
-                    statusClass = "mod-orange";
-                    onClickAction = "alert('ADVERTENCIA: 2 Códigos de Falla Presentes\\n- C0035\\n- U0100')";
-                } else if(i < 15) { // 5 Rojos
-                    statusClass = "mod-red";
-                    onClickAction = "alert('ERROR CRÍTICO: Módulo no responde.\\nVerifique alimentación y red CAN.')";
-                } else { // 5 Grises
-                    statusClass = "mod-grey";
-                    onClickAction = "alert('Módulo no equipado en este vehículo.')";
+                // Distribuir estados aleatoriamente (aprox 25% cada uno)
+                if(r < 0.25) { statusClass = "mod-green"; action = "alert('OK: Sistema Operativo')"; }
+                else if(r < 0.50) { statusClass = "mod-orange"; action = "alert('DTC: B1000 - Fallo Interno')"; }
+                else if(r < 0.75) { statusClass = "mod-red"; action = "alert('ERROR: Sin Comunicación')"; }
+                else { statusClass = "mod-grey"; action = "alert('N/A: No Equipado')"; }
+                
+                return `<div class="node-wrapper"><div class="module-node ${statusClass}" onclick="${action}">${name}</div></div>`;
+            };
+
+            // Llenar Rama HS-CAN (Izquierda)
+            modulesHS.forEach(mod => { hsList.innerHTML += createNode(mod); });
+            
+            // Llenar Rama MS-CAN (Derecha)
+            modulesMS.forEach(mod => { msList.innerHTML += createNode(mod); });
+        }
+
+        function openHexEditor() { openModal('hexModal'); startHexDump(); }
+        function closeHex() { closeModal('hexModal'); if(hexTimer) clearInterval(hexTimer); }
+
+        function startHexDump() {
+            const hexAddr = document.getElementById('hexAddr');
+            const hexData = document.getElementById('hexData');
+            const hexAscii = document.getElementById('hexAscii');
+            if(hexTimer) clearInterval(hexTimer);
+            let startAddr = 0;
+            const updateMatrix = () => {
+                let htmlAddr = "", htmlData = "", htmlAscii = "";
+                for(let i=0; i<16; i++) {
+                    let addr = (startAddr + i*16).toString(16).toUpperCase().padStart(4, '0');
+                    htmlAddr += `0x${addr}<br>`;
+                    let rowData = "", rowAscii = "";
+                    for(let j=0; j<8; j++) {
+                        let val = Math.floor(Math.random() * 256);
+                        if(Math.random() > 0.8) val = Math.floor(Math.random() * 256);
+                        let hex = val.toString(16).toUpperCase().padStart(2, '0');
+                        rowData += `${hex} `;
+                        rowAscii += (val > 32 && val < 126) ? String.fromCharCode(val) : '.';
+                    }
+                    htmlData += `${rowData}<br>`;
+                    htmlAscii += `${rowAscii}<br>`;
                 }
-                
-                grid.innerHTML += `<div class="module-node ${statusClass}" onclick="${onClickAction}">${shuffled[i]}</div>`;
-            }
+                hexAddr.innerHTML = htmlAddr; hexData.innerHTML = htmlData; hexAscii.innerHTML = htmlAscii;
+            };
+            updateMatrix();
+            hexTimer = setInterval(updateMatrix, 500);
         }
 
         async function attemptLogin() {
@@ -617,7 +703,6 @@
         function toggleVoice() { alert("Escuchando comandos por voz..."); }
         function startScan() { alert("Escanéo OBD2 Iniciado..."); setTimeout(()=>alert("Sin códigos de falla (DTC) encontrados."), 2000); }
         function testSecurity() { alert("Bypassing Security Gateway... OK"); }
-        function toggleRec() { alert("Grabando Log de Datos en nube..."); }
         function openHexEditor(){openModal('hexModal')}
     </script>
 </body>
