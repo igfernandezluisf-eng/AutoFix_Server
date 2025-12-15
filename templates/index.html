@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.3.1</title>
+    <title>AutoFix PRO v7.4.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -38,7 +38,7 @@
         .scan-btn { background: linear-gradient(135deg, var(--main-color), #0072ff); color: white; border: none; width: 100%; max-width: 600px; padding: 18px; font-size: 1.1rem; font-weight: bold; border-radius: 12px; margin-bottom: 15px; }
         .console { width: 100%; max-width: 600px; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: #ccc; }
         .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
-        .modal-content { background: #141419; margin: 5% auto; padding: 20px; border: 1px solid #444; width: 90%; max-width: 600px; border-radius: 12px; position: relative; }
+        .modal-content { background: #141419; margin: 5% auto; padding: 20px; border: 1px solid #444; width: 90%; max-width: 650px; border-radius: 12px; position: relative; }
         .close-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #fff; }
         .input-dark, select.input-dark { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 12px; margin: 10px 0; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
         label { display: block; text-align: left; color: #888; font-size: 0.8rem; margin-top: 10px; }
@@ -102,12 +102,21 @@
         .quote-box { background: rgba(255,0,0,0.1); border: 1px solid var(--neon-red); padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: left; }
         .quote-total { background: #222; padding: 15px; border-radius: 5px; margin-top: 15px; text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--neon-amber); border: 1px solid #444; }
 
-        /* ESTILOS CRM (v7.3.1) */
         .client-card { background: #222; border-left: 4px solid var(--main-color); padding: 15px; margin-bottom: 10px; border-radius: 5px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
         .client-info h3 { margin: 0; font-size: 1rem; color: #fff; }
         .client-info p { margin: 2px 0; font-size: 0.8rem; color: #888; }
         .client-actions button { background: none; border: none; color: #aaa; cursor: pointer; font-size: 1.2rem; margin-left: 10px; }
         .client-actions button:hover { color: #fff; }
+
+        /* ESTILOS INVENTARIO (v7.4.0) */
+        .inv-search { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 5px; margin-bottom: 15px; }
+        .inv-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .inv-table th { background: #1a1a1a; color: #888; padding: 10px; text-align: left; }
+        .inv-table td { padding: 10px; border-bottom: 1px solid #333; }
+        .stock-low { color: var(--neon-amber); font-weight: bold; }
+        .stock-zero { color: var(--neon-red); text-decoration: line-through; }
+        .inv-actions button { background: none; border: none; color: #aaa; cursor: pointer; margin-right: 5px; font-size: 1.1rem; }
+        .inv-actions button:hover { color: #fff; }
 
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
@@ -115,17 +124,17 @@
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.3.1</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.4.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.3.1 (CRM DATA UPDATE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.4.0 (INVENTORY MANAGER)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.3.1</span></div>
+        <div class="brand">AutoFix <span>PRO v7.4.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -138,7 +147,7 @@
         <button class="action-btn" onclick="toggleSunMode()"><span class="material-icons-round">wb_sunny</span>SOL</button>
         <button class="action-btn" onclick="toggleVoice()"><span class="material-icons-round">mic</span>VOZ</button>
         <button class="action-btn btn-green" onclick="generateQuote()"><span class="material-icons-round">attach_money</span>COTIZAR</button>
-        <button class="action-btn btn-amber" onclick="openModal('inventoryModal')"><span class="material-icons-round">inventory_2</span>INV</button>
+        <button class="action-btn btn-amber" onclick="openInventory()"><span class="material-icons-round">inventory_2</span>INV</button>
         <button class="action-btn" onclick="openCRM()"><span class="material-icons-round">groups</span>CRM</button>
         <button class="action-btn btn-green" onclick="openModal('predictModal')"><span class="material-icons-round">auto_graph</span>PRED</button>
         <button id="btnRec" class="action-btn btn-red" onclick="toggleRec()"><span class="material-icons-round">fiber_manual_record</span>REC</button>
@@ -158,7 +167,40 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.3.1 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.4.0 Ready.</div></div>
+
+    <div id="inventoryModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-modal" onclick="closeModal('inventoryModal')">&times;</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2>INVENTARIO (STOCK)</h2>
+                <button class="btn-small" style="width:auto; padding:5px 15px; background:var(--neon-green); color:#000;" onclick="openNewProductForm()">+ NUEVO</button>
+            </div>
+            
+            <input type="text" class="inv-search" placeholder="🔍 Buscar repuesto...">
+            
+            <div id="newProductForm" style="display:none; background:#222; padding:15px; margin-bottom:15px; border-radius:10px; border:1px solid #444;">
+                <h3 style="margin-top:0; color:var(--main-color);">Nuevo Producto</h3>
+                <input type="text" id="inv-name" class="input-dark" placeholder="Nombre Repuesto">
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="inv-brand" class="input-dark" placeholder="Marca">
+                    <input type="number" id="inv-stock" class="input-dark" placeholder="Stock Inicial">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="inv-cost" class="input-dark" placeholder="Costo $">
+                    <input type="number" id="inv-price" class="input-dark" placeholder="Precio Venta $">
+                </div>
+                <button class="btn-full" onclick="saveProduct()">GUARDAR PRODUCTO</button>
+            </div>
+
+            <div style="max-height:400px; overflow-y:auto;">
+                <table class="inv-table">
+                    <thead><tr><th>NOMBRE</th><th>MARCA</th><th>COSTO</th><th>VENTA</th><th>STOCK</th><th>ACCIONES</th></tr></thead>
+                    <tbody id="inventoryList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <div id="crmModal" class="modal">
         <div class="modal-content">
@@ -167,7 +209,6 @@
                 <h2>CLIENTES (CRM)</h2>
                 <button class="btn-small" style="width:auto; padding:5px 15px; background:var(--neon-green); color:#000;" onclick="openNewClientForm()">+ NUEVO</button>
             </div>
-            
             <div id="newClientForm" style="display:none; background:#222; padding:15px; margin-bottom:15px; border-radius:10px; border:1px solid #444;">
                 <h3 style="margin-top:0; color:var(--main-color);">Registrar Cliente</h3>
                 <input type="text" id="crm-name" class="input-dark" placeholder="Nombre Completo">
@@ -175,17 +216,14 @@
                 <input type="text" id="crm-car" class="input-dark" placeholder="Vehículo (Marca/Modelo)">
                 <div style="display:flex; gap:10px;">
                     <input type="number" id="crm-year" class="input-dark" placeholder="Año (Ej: 2015)">
-                    <input type="text" id="crm-plate" class="input-dark" placeholder="Placas">
+                    <input type="text" id="crm-plate" class="input-dark" placeholder="Placas (ABC1234)">
                 </div>
-                
                 <div style="display:flex; gap:10px; margin-top:10px;">
                     <button class="btn-full" style="background:#333; border:1px solid #555;" onclick="closeNewClientForm()">CANCELAR</button>
                     <button class="btn-full" onclick="saveClient()">GUARDAR</button>
                 </div>
             </div>
-
-            <div id="clientList" style="max-height:400px; overflow-y:auto;">
-                </div>
+            <div id="clientList" style="max-height:400px; overflow-y:auto;"></div>
         </div>
     </div>
 
@@ -428,16 +466,13 @@
         let currentTotal = 0; 
         let isEditingQuote = false;
 
-        // --- SISTEMA CRM (v7.3.1 - DATA UPDATE) ---
+        // --- SISTEMA CRM (v7.3.2) ---
         let crmDatabase = [
             { id: 1, name: "Juan Pérez", phone: "584125550011", car: "Ford Fiesta", year: "2015", plate: "ABC1234" },
             { id: 2, name: "María González", phone: "584149992233", car: "Toyota Corolla", year: "2020", plate: "XYZ9876" }
         ];
 
-        function openCRM() {
-            openModal('crmModal');
-            renderCRM();
-        }
+        function openCRM() { openModal('crmModal'); renderCRM(); }
 
         function renderCRM() {
             const list = document.getElementById('clientList');
@@ -459,13 +494,8 @@
             });
         }
 
-        function openNewClientForm() {
-            document.getElementById('newClientForm').style.display = 'block';
-        }
-
-        function closeNewClientForm() {
-            document.getElementById('newClientForm').style.display = 'none';
-        }
+        function openNewClientForm() { document.getElementById('newClientForm').style.display = 'block'; }
+        function closeNewClientForm() { document.getElementById('newClientForm').style.display = 'none'; }
 
         function saveClient() {
             const name = document.getElementById('crm-name').value;
@@ -478,8 +508,6 @@
                 crmDatabase.push({ id: Date.now(), name: name, phone: phone, car: car, year: year, plate: plate });
                 renderCRM();
                 closeNewClientForm();
-                
-                // Limpiar todos los campos
                 document.getElementById('crm-name').value = "";
                 document.getElementById('crm-phone').value = "";
                 document.getElementById('crm-car').value = "";
@@ -494,6 +522,82 @@
             if(confirm("¿Eliminar cliente?")) {
                 crmDatabase.splice(index, 1);
                 renderCRM();
+            }
+        }
+
+        // --- SISTEMA INVENTARIO (v7.4.0) ---
+        let inventoryDB = [
+            { id: 1, name: "Bujía Iridium NGK", brand: "NGK", cost: 8, price: 12, stock: 24 },
+            { id: 2, name: "Filtro Aceite PH3593", brand: "Fram", cost: 5, price: 9, stock: 12 },
+            { id: 3, name: "Aceite 5W30 Sint.", brand: "Mobil1", cost: 15, price: 25, stock: 4 }, // Stock Bajo
+            { id: 4, name: "Pastillas Freno Del.", brand: "Brembo", cost: 30, price: 60, stock: 0 } // Stock Cero
+        ];
+
+        function openInventory() {
+            openModal('inventoryModal');
+            renderInventory();
+        }
+
+        function renderInventory() {
+            const list = document.getElementById('inventoryList');
+            list.innerHTML = "";
+            inventoryDB.forEach((item, index) => {
+                let stockClass = "";
+                if(item.stock === 0) stockClass = "stock-zero";
+                else if(item.stock <= 5) stockClass = "stock-low";
+                
+                list.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.brand}</td>
+                    <td>$${item.cost}</td>
+                    <td>$${item.price}</td>
+                    <td class="${stockClass}">${item.stock}</td>
+                    <td class="inv-actions">
+                        <button onclick="addStock(${index})">➕</button>
+                        <button onclick="alert('Editar: ${item.name}')">✏️</button>
+                        <button onclick="deleteProduct(${index})" style="color:var(--neon-red)">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function openNewProductForm() { document.getElementById('newProductForm').style.display = 'block'; }
+        
+        function saveProduct() {
+            const name = document.getElementById('inv-name').value;
+            const brand = document.getElementById('inv-brand').value;
+            const stock = parseInt(document.getElementById('inv-stock').value);
+            const cost = parseFloat(document.getElementById('inv-cost').value);
+            const price = parseFloat(document.getElementById('inv-price').value);
+            
+            if(name && brand && !isNaN(stock) && !isNaN(cost) && !isNaN(price)) {
+                inventoryDB.push({ id: Date.now(), name: name, brand: brand, stock: stock, cost: cost, price: price });
+                renderInventory();
+                document.getElementById('newProductForm').style.display = 'none';
+                // Limpiar
+                document.getElementById('inv-name').value = "";
+                document.getElementById('inv-brand').value = "";
+                document.getElementById('inv-stock').value = "";
+                document.getElementById('inv-cost').value = "";
+                document.getElementById('inv-price').value = "";
+            } else {
+                alert("Complete todos los campos del producto.");
+            }
+        }
+
+        function addStock(index) {
+            let qty = prompt("Cantidad a agregar:");
+            if(qty && !isNaN(qty)) {
+                inventoryDB[index].stock += parseInt(qty);
+                renderInventory();
+            }
+        }
+
+        function deleteProduct(index) {
+            if(confirm("¿Borrar producto del inventario?")) {
+                inventoryDB.splice(index, 1);
+                renderInventory();
             }
         }
 
