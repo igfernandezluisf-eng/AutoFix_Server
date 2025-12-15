@@ -48,6 +48,7 @@
         .data-table th { color: var(--main-color); border-bottom: 1px solid #444; padding: 8px; }
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
         .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
+        
         .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .service-btn { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; }
         .service-btn:active { background: #30363d; transform: scale(0.95); }
@@ -61,42 +62,46 @@
         .timeline { width: 100%; height: 5px; background: #333; margin-top: 20px; position: relative; }
         .timeline-progress { height: 100%; background: var(--neon-amber); width: 0%; }
         
-        /* ESTILOS TOPOLOGÍA ÁRBOL (v7.1.0) */
+        .topology-container { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+        .gateway-node { background: #333; border: 2px solid #fff; color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; position: relative; }
+        .gateway-node::after { content: ''; position: absolute; bottom: -20px; left: 50%; width: 2px; height: 20px; background: #555; }
+        .bus-line { width: 90%; height: 2px; background: #555; margin-bottom: 20px; position: relative; }
+        .module-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+        .module-node { padding: 10px 5px; border-radius: 5px; text-align: center; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: 1px solid transparent; transition: 0.2s; color: #000; }
+        .mod-green { background: var(--neon-green); box-shadow: 0 0 5px var(--neon-green); }
+        .mod-orange { background: var(--neon-amber); box-shadow: 0 0 5px var(--neon-amber); }
+        .mod-red { background: var(--neon-red); box-shadow: 0 0 5px var(--neon-red); color: #fff; }
+        .mod-grey { background: #333; border-color: #555; color: #777; }
+        
         .topology-tree { display: flex; flex-direction: column; align-items: center; position: relative; padding-bottom: 20px; }
         .gateway-icon { font-size: 2rem; color: #fff; background: #333; padding: 10px; border-radius: 50%; border: 2px solid var(--main-color); z-index: 2; margin-bottom: 10px; }
         .trunk-line { width: 4px; height: 30px; background: #555; margin-bottom: 0; }
         .bus-container { display: flex; justify-content: space-between; width: 100%; gap: 20px; position: relative; }
         .bus-branch { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
         .bus-branch::before { content: ''; position: absolute; top: 0; width: 50%; height: 4px; background: #555; } 
-        /* Conector horizontal superior */
         .bus-container .bus-branch:first-child::before { right: 0; border-top-left-radius: 5px; }
         .bus-container .bus-branch:last-child::before { left: 0; border-top-right-radius: 5px; }
-        
         .branch-line { width: 4px; height: 100%; background: #555; position: absolute; top: 0; bottom: 0; z-index: 0; }
-        .hs-can { background: #0072ff; } /* Azul - Alta Velocidad */
-        .ms-can { background: #00ff9d; } /* Verde - Baja Velocidad */
-        
+        .hs-can { background: #0072ff; } 
+        .ms-can { background: #00ff9d; } 
         .node-wrapper { margin: 10px 0; z-index: 1; width: 100%; display: flex; justify-content: center; }
-        .module-node { padding: 8px 15px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; width: 80px; text-align: center; color: #000; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.2s; position: relative; }
-        .module-node:active { transform: scale(0.95); }
-        /* Conector pequeño del nodo a la línea principal */
-        .module-node::before { content: ''; position: absolute; top: 50%; width: 15px; height: 2px; background: #777; }
-        .left-branch .module-node::before { right: -15px; }
-        .right-branch .module-node::before { left: -15px; }
-
-        .mod-green { background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); }
-        .mod-orange { background: var(--neon-amber); box-shadow: 0 0 8px var(--neon-amber); }
-        .mod-red { background: var(--neon-red); box-shadow: 0 0 8px var(--neon-red); color: white; }
-        .mod-grey { background: #333; color: #777; border-color: #555; }
-
+        .module-node.tree { padding: 8px 15px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; width: 80px; text-align: center; color: #000; border: 1px solid rgba(255,255,255,0.2); transition: transform 0.2s; position: relative; }
+        .module-node.tree::before { content: ''; position: absolute; top: 50%; width: 15px; height: 2px; background: #777; }
+        .left-branch .module-node.tree::before { right: -15px; }
+        .right-branch .module-node.tree::before { left: -15px; }
         .topology-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; font-size: 0.7rem; justify-content: center; border-top: 1px solid #333; padding-top: 10px; width: 100%; }
-        .legend-item { display: flex; align-items: center; gap: 5px; }
-        .legend-box { width: 12px; height: 12px; border-radius: 2px; }
-        
+
         .hex-grid { font-family: 'Courier New', monospace; font-size: 0.8rem; display: grid; grid-template-columns: 50px 1fr 1fr; gap: 10px; text-align: left; height: 300px; overflow-y: auto; background: #000; padding: 10px; border: 1px solid #333; color: var(--neon-green); }
         .hex-addr { color: #888; }
         .hex-data { color: var(--main-color); letter-spacing: 2px; }
         .hex-ascii { color: #aaa; }
+
+        /* ESTILOS COTIZADOR (v7.1.0) */
+        .quote-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; text-align: left; }
+        .quote-title { color: var(--neon-green); font-size: 1.2rem; font-weight: bold; }
+        .quote-meta { font-size: 0.8rem; color: #888; }
+        .quote-box { background: rgba(255,0,0,0.1); border: 1px solid var(--neon-red); padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: left; }
+        .quote-total { background: #222; padding: 15px; border-radius: 5px; margin-top: 15px; text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--neon-amber); border: 1px solid #444; }
 
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
@@ -109,7 +114,7 @@
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.1.0 (TOPOLOGY TREE)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.1.0 (AUTO QUOTE)</div>
         </div>
     </div>
 
@@ -126,7 +131,7 @@
     <div class="toolbar">
         <button class="action-btn" onclick="toggleSunMode()"><span class="material-icons-round">wb_sunny</span>SOL</button>
         <button class="action-btn" onclick="toggleVoice()"><span class="material-icons-round">mic</span>VOZ</button>
-        <button class="action-btn btn-green" onclick="openModal('quoteModal')"><span class="material-icons-round">attach_money</span>COTIZAR</button>
+        <button class="action-btn btn-green" onclick="generateQuote()"><span class="material-icons-round">attach_money</span>COTIZAR</button>
         <button class="action-btn btn-amber" onclick="openModal('inventoryModal')"><span class="material-icons-round">inventory_2</span>INV</button>
         <button class="action-btn" onclick="openModal('crmModal')"><span class="material-icons-round">groups</span>CRM</button>
         <button class="action-btn btn-green" onclick="openModal('predictModal')"><span class="material-icons-round">auto_graph</span>PRED</button>
@@ -149,23 +154,52 @@
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
     <div class="console" id="console"><div>> AutoFix v7.1.0 Ready.</div></div>
 
+    <div id="quoteModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="closeModal('quoteModal')">&times;</span>
+            <div class="quote-header">
+                <div class="quote-title">AutoFix PRO Service</div>
+                <div class="quote-meta">Fecha: <span id="q-date">--</span></div>
+                <div class="quote-meta">Vehículo: <span id="q-vin">1G1JC5444W720589</span> (Nissan Sentra)</div>
+            </div>
+            
+            <div class="quote-box">
+                <strong>DIAGNÓSTICO TÉCNICO:</strong><br>
+                <span id="q-dtc" style="color:var(--neon-red); font-weight:bold;">---</span>
+            </div>
+
+            <table class="data-table">
+                <thead><tr><th>DESCRIPCIÓN</th><th>CANT</th><th>PRECIO</th><th>TOTAL</th></tr></thead>
+                <tbody id="quoteBody">
+                    </tbody>
+            </table>
+
+            <div class="quote-total">
+                TOTAL: <span id="q-total">$ 0.00</span>
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button class="btn-small" onclick="alert('PDF Generado para Impresión')">🖨️ IMPRIMIR</button>
+                <button class="btn-small" style="background:#25D366; border-color:#25D366;" onclick="alert('Enviando a WhatsApp del Cliente...')">📱 WHATSAPP</button>
+                <button class="btn-small" style="background:#333;" onclick="alert('Modo Edición Activado')">✏️ EDITAR</button>
+            </div>
+        </div>
+    </div>
+
     <div id="topologyModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <span class="close-modal" onclick="closeModal('topologyModal')">&times;</span>
             <h2 style="margin-bottom:5px;">TOPOLOGÍA CAN BUS</h2>
             <p style="font-size:0.8rem; color:#888; margin-bottom:20px;">GATEWAY CENTRAL (CGW)</p>
-            
             <div class="topology-tree">
                 <div class="gateway-icon"><span class="material-icons-round" style="font-size:2rem;">router</span></div>
                 <div class="trunk-line"></div>
-                
                 <div class="bus-container">
                     <div class="bus-branch left-branch">
                         <div class="branch-line hs-can"></div>
                         <div style="margin-bottom:10px; font-size:0.7rem; color:#0072ff; z-index:1; background:#000; padding:2px;">HS-CAN</div>
                         <div id="hsCanList" style="width:100%;"></div>
                     </div>
-                    
                     <div class="bus-branch right-branch">
                         <div class="branch-line ms-can"></div>
                         <div style="margin-bottom:10px; font-size:0.7rem; color:#00ff9d; z-index:1; background:#000; padding:2px;">MS-CAN</div>
@@ -173,14 +207,12 @@
                     </div>
                 </div>
             </div>
-
             <div class="topology-legend">
                 <div class="legend-item"><div class="legend-box" style="background:var(--neon-green)"></div><span>ONLINE (OK)</span></div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--neon-amber)"></div><span>FALLA (DTC)</span></div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--neon-red)"></div><span>OFFLINE (ERR)</span></div>
                 <div class="legend-item"><div class="legend-box" style="background:#333; border:1px solid #555"></div><span>NO INSTALADO</span></div>
             </div>
-            
             <button class="btn-full" style="margin-top:15px;" onclick="openTopology()">🔄 RE-ESCANEAR RED</button>
         </div>
     </div>
@@ -350,7 +382,6 @@
         <label>Taller</label><input type="text" class="input-dark" value="Taller Principal"><button class="btn-full" onclick="saveSettings()">GUARDAR</button></div></div>
     <div id="inventoryModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('inventoryModal')">&times;</span><h2>INVENTARIO</h2><table class="data-table"><tr><th>Item</th><th>Stock</th></tr><tr><td>Filtro 5W30</td><td>12</td></tr><tr><td>Bujía NGK</td><td>24</td></tr></table></div></div>
     <div id="crmModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('crmModal')">&times;</span><h2>CRM</h2><p>Juan P. - Fiesta 2015 (Listo)</p></div></div>
-    <div id="quoteModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('quoteModal')">&times;</span><h2>COTIZAR</h2><p>Total: $ 85.00</p><button class="btn-full">GENERAR</button></div></div>
     <div id="predictModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('predictModal')">&times;</span><h2>IA</h2><p>Salud: 85%</p></div></div>
     <div id="garageModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('garageModal')">&times;</span><h2>GARAJE</h2><p>Nissan Sentra 2018</p></div></div>
 
@@ -394,7 +425,41 @@
             { code: 'P0217', desc: '(Sobrecalentamiento)', rpm: '3200', vss: '110', ect: '118', load: '75', trim: '-5 %', tps: '60', map: '80' }
         ];
 
-        // MÓDULOS PARA EL ÁRBOL CAN (v7.1.0)
+        // --- SISTEMA COTIZADOR (v7.1.0) ---
+        const repairDatabase = {
+            'P0300': { desc: 'Misfire Random', parts: [ {name: 'Juego Bujías Iridium', cost: 48}, {name: 'Bobina Encendido (x1)', cost: 35} ], labor: 40 },
+            'P0171': { desc: 'Sistema Muy Pobre', parts: [ {name: 'Sensor MAF', cost: 120}, {name: 'Filtro Aire', cost: 15} ], labor: 25 },
+            'P0420': { desc: 'Eficiencia Catalizador', parts: [ {name: 'Catalizador Universal', cost: 250}, {name: 'Sensor O2 Banco 1', cost: 45} ], labor: 80 },
+            'P0113': { desc: 'Sensor IAT Alto', parts: [ {name: 'Sensor Temperatura Aire', cost: 22} ], labor: 15 },
+            'P0217': { desc: 'Motor Caliente', parts: [ {name: 'Termostato', cost: 18}, {name: 'Refrigerante 1Gl', cost: 12} ], labor: 35 }
+        };
+
+        function generateQuote() {
+            openModal('quoteModal');
+            // Simular detección de falla
+            const code = Object.keys(repairDatabase)[Math.floor(Math.random() * 5)];
+            const fix = repairDatabase[code];
+            
+            document.getElementById('q-date').innerText = new Date().toLocaleDateString();
+            document.getElementById('q-dtc').innerText = `${code} - ${fix.desc}`;
+            
+            const tbody = document.getElementById('quoteBody');
+            tbody.innerHTML = "";
+            let total = 0;
+            
+            // Agregar Repuestos
+            fix.parts.forEach(part => {
+                tbody.innerHTML += `<tr><td>${part.name}</td><td>1</td><td>$${part.cost}</td><td>$${part.cost}</td></tr>`;
+                total += part.cost;
+            });
+            
+            // Agregar Mano de Obra
+            tbody.innerHTML += `<tr><td>Mano de Obra</td><td>1</td><td>$${fix.labor}</td><td>$${fix.labor}</td></tr>`;
+            total += fix.labor;
+            
+            document.getElementById('q-total').innerText = "$ " + total.toFixed(2);
+        }
+
         const modulesHS = ["ECM", "TCM", "ABS", "SRS", "BCM", "EPS", "TPMS", "EPB", "SAS", "IMMO"];
         const modulesMS = ["IPC", "HVAC", "RAD", "AMP", "PDM", "DDM", "RDM", "LDM", "SUN", "PAM"];
 
@@ -405,25 +470,20 @@
             hsList.innerHTML = "";
             msList.innerHTML = "";
             
-            // Función auxiliar para crear nodos
             const createNode = (name) => {
                 let r = Math.random();
                 let statusClass = "mod-green";
                 let action = "alert('Módulo Online. Sin códigos.')";
                 
-                // Distribuir estados aleatoriamente (aprox 25% cada uno)
                 if(r < 0.25) { statusClass = "mod-green"; action = "alert('OK: Sistema Operativo')"; }
                 else if(r < 0.50) { statusClass = "mod-orange"; action = "alert('DTC: B1000 - Fallo Interno')"; }
                 else if(r < 0.75) { statusClass = "mod-red"; action = "alert('ERROR: Sin Comunicación')"; }
                 else { statusClass = "mod-grey"; action = "alert('N/A: No Equipado')"; }
                 
-                return `<div class="node-wrapper"><div class="module-node ${statusClass}" onclick="${action}">${name}</div></div>`;
+                return `<div class="node-wrapper"><div class="module-node tree ${statusClass}" onclick="${action}">${name}</div></div>`;
             };
 
-            // Llenar Rama HS-CAN (Izquierda)
             modulesHS.forEach(mod => { hsList.innerHTML += createNode(mod); });
-            
-            // Llenar Rama MS-CAN (Derecha)
             modulesMS.forEach(mod => { msList.innerHTML += createNode(mod); });
         }
 
