@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.5.0</title>
+    <title>AutoFix PRO v7.6.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -110,23 +110,45 @@
         .inv-actions button { background: none; border: none; color: #aaa; cursor: pointer; margin-right: 5px; font-size: 1.1rem; }
         .inv-actions button:hover { color: #fff; }
 
+        /* VOICE ASSISTANT STYLES (v7.6.0) */
+        .voice-overlay { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 20px 40px; border-radius: 50px; border: 1px solid var(--main-color); display: none; flex-direction: column; align-items: center; gap: 10px; z-index: 1000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); backdrop-filter: blur(10px); }
+        .voice-waves { display: flex; gap: 5px; height: 30px; align-items: center; justify-content: center; }
+        .wave-bar { width: 4px; background: var(--main-color); animation: wave 1s infinite; border-radius: 2px; height: 10px; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(5) { animation-delay: 0s; }
+        @keyframes wave { 0%, 100% { height: 10px; opacity: 0.5; } 50% { height: 30px; opacity: 1; box-shadow: 0 0 10px var(--main-color); } }
+        .voice-text { color: #fff; font-size: 1rem; font-weight: bold; min-width: 220px; text-align: center; font-style: italic; opacity: 0.9; }
+
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
+    <div id="voiceOverlay" class="voice-overlay">
+        <div class="voice-waves">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+        </div>
+        <div id="voiceText" class="voice-text">Escuchando...</div>
+    </div>
+
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.5.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.6.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.5.0 (STOCK SYNC SYSTEM)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.6.0 (VOICE ASSISTANT)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.5.0</span></div>
+        <div class="brand">AutoFix <span>PRO v7.6.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -159,7 +181,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.5.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.6.0 Ready.</div></div>
 
     <div id="inventoryModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
@@ -168,9 +190,7 @@
                 <h2>INVENTARIO (STOCK)</h2>
                 <button class="btn-small" style="width:auto; padding:5px 15px; background:var(--neon-green); color:#000;" onclick="openNewProductForm()">+ NUEVO</button>
             </div>
-            
             <input type="text" class="inv-search" placeholder="🔍 Buscar repuesto...">
-            
             <div id="newProductForm" style="display:none; background:#222; padding:15px; margin-bottom:15px; border-radius:10px; border:1px solid #444;">
                 <h3 style="margin-top:0; color:var(--main-color);">Nuevo Producto</h3>
                 <input type="text" id="inv-name" class="input-dark" placeholder="Nombre Repuesto">
@@ -184,7 +204,6 @@
                 </div>
                 <button class="btn-full" onclick="saveProduct()">GUARDAR PRODUCTO</button>
             </div>
-
             <div style="max-height:400px; overflow-y:auto;">
                 <table class="inv-table">
                     <thead><tr><th>NOMBRE</th><th>MARCA</th><th>COSTO</th><th>VENTA</th><th>STOCK</th><th>ACCIONES</th></tr></thead>
@@ -458,6 +477,75 @@
         let hexTimer = null;
         let currentTotal = 0; 
         let isEditingQuote = false;
+        let recognition; // Para voz
+        let isListening = false;
+
+        // --- SISTEMA DE VOZ (v7.6.0) ---
+        function toggleVoice() {
+            if(isListening) {
+                stopVoice();
+                return;
+            }
+            
+            document.getElementById('voiceOverlay').style.display = 'flex';
+            document.getElementById('voiceText').innerText = "Escuchando...";
+            isListening = true;
+
+            // Intentar usar API Nativa
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.lang = 'es-ES';
+                recognition.continuous = false;
+                recognition.interimResults = true;
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('voiceText').innerText = transcript;
+                    if(event.results[0].isFinal) {
+                        processVoiceCommand(transcript);
+                    }
+                };
+
+                recognition.onend = () => { if(isListening) stopVoice(); };
+                recognition.start();
+            } else {
+                // Modo Simulación si no hay API
+                setTimeout(() => {
+                    document.getElementById('voiceText').innerText = "AutoFix, activar prueba de inyectores...";
+                    setTimeout(() => {
+                        processVoiceCommand("activar inyectores");
+                    }, 2000);
+                }, 1000);
+            }
+        }
+
+        function stopVoice() {
+            isListening = false;
+            document.getElementById('voiceOverlay').style.display = 'none';
+            if(recognition) recognition.stop();
+        }
+
+        function processVoiceCommand(cmd) {
+            cmd = cmd.toLowerCase();
+            let response = "Comando no reconocido";
+            
+            if(cmd.includes("inyector") || cmd.includes("inyectores")) {
+                response = "Iniciando prueba de balance de inyectores.";
+                // Aquí iría la lógica real
+            } else if (cmd.includes("borrar") || cmd.includes("códigos")) {
+                response = "Borrando todos los códigos de falla del sistema.";
+            } else if (cmd.includes("ventilador")) {
+                response = "Activando ventilador de alta velocidad.";
+            }
+
+            speak(response);
+            setTimeout(stopVoice, 3000);
+        }
+
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
+        }
 
         // --- SISTEMA CRM (v7.3.2) ---
         let crmDatabase = [
@@ -507,7 +595,7 @@
                 document.getElementById('crm-year').value = "";
                 document.getElementById('crm-plate').value = "";
             } else {
-                alert("Por favor complete todos los campos (Nombre, Teléfono, Auto, Año, Placas).");
+                alert("Por favor complete todos los campos.");
             }
         }
 
@@ -574,7 +662,7 @@
                 document.getElementById('inv-cost').value = "";
                 document.getElementById('inv-price').value = "";
             } else {
-                alert("Complete todos los campos del producto.");
+                alert("Complete todos los campos.");
             }
         }
 
@@ -587,7 +675,7 @@
         }
 
         function deleteProduct(index) {
-            if(confirm("¿Borrar producto del inventario?")) {
+            if(confirm("¿Borrar producto?")) {
                 inventoryDB.splice(index, 1);
                 renderInventory();
             }
@@ -596,44 +684,16 @@
         // --- SISTEMA COTIZADOR + SYNC (v7.5.0) ---
         function confirmJob() {
             if(confirm("¿Confirmar trabajo? Esto descontará los repuestos del inventario.")) {
-                // Simulación de descuento (En un caso real, buscaría por ID)
-                // Aquí descontamos genéricamente para la demo
                 if(inventoryDB.length > 0 && inventoryDB[0].stock > 0) {
-                    inventoryDB[0].stock -= 4; // Descuenta 4 bujías simuladas
+                    inventoryDB[0].stock -= 4; 
                     alert("Trabajo Registrado.\nInventario Actualizado (-4 Bujías).");
-                    renderInventory(); // Refresca la UI de inventario si está abierta
+                    renderInventory(); 
                     closeModal('quoteModal');
                 } else {
-                    alert("Error: Stock insuficiente para realizar este trabajo.");
+                    alert("Error: Stock insuficiente.");
                 }
             }
         }
-
-        const servicesData = {
-            'OIL': { title: 'RESET ACEITE', instr: 'Encienda el contacto (ON). Motor apagado.' },
-            'EPB': { title: 'FRENOS EPB', instr: 'Suelte el freno de mano. Batería > 12V.' },
-            'SAS': { title: 'CALIBRAR VOLANTE', instr: 'Coloque volante recto (0 grados).' },
-            'DPF': { title: 'REGENERAR DPF', instr: 'Motor encendido. Temperatura > 70°C.' },
-            'BMS': { title: 'BATERÍA BMS', instr: 'Batería nueva instalada. Contacto ON.' },
-            'ABS': { title: 'PURGA ABS', instr: 'Pise el freno. Se activará la bomba.' },
-            'INJ': { title: 'INYECTORES', instr: 'Ingrese códigos de inyectores nuevos.' },
-            'TPS': { title: 'CUERPO ACELERACIÓN', instr: 'Limpie la mariposa antes de iniciar.' },
-            'TPMS': { title: 'RESET TPMS', instr: 'Ajuste presión de neumáticos primero.' },
-            'GEAR': { title: 'APRENDIZAJE CAJA', instr: 'Procedimiento de marcha en carretera.' },
-            'IMMO': { title: 'LLAVES IMMO', instr: 'Tenga todas las llaves presentes.' },
-            'SUS': { title: 'SUSPENSIÓN', instr: 'Vehículo en superficie plana.' },
-            'SUN': { title: 'TECHO SOLAR', instr: 'Cierre el techo completamente.' },
-            'AFS': { title: 'FAROS AFS', instr: 'Nivelar vehículo frente a pared.' },
-            'EGR': { title: 'ADAPTACIÓN EGR', instr: 'Válvula limpia o reemplazada.' }
-        };
-
-        const freezeFrames = [
-            { code: 'P0300', desc: '(Misfire Random)', rpm: '2540', vss: '85', ect: '98', load: '45', trim: '+12 %', tps: '32', map: '45' },
-            { code: 'P0171', desc: '(Mezcla Pobre B1)', rpm: '850', vss: '0', ect: '95', load: '18', trim: '+25 %', tps: '12', map: '32' },
-            { code: 'P0420', desc: '(Catalizador B1)', rpm: '1800', vss: '60', ect: '92', load: '30', trim: '+3 %', tps: '25', map: '40' },
-            { code: 'P0113', desc: '(IAT Alto Voltaje)', rpm: '0', vss: '0', ect: '40', load: '0', trim: '0 %', tps: '0', map: '101' },
-            { code: 'P0217', desc: '(Sobrecalentamiento)', rpm: '3200', vss: '110', ect: '118', load: '75', trim: '-5 %', tps: '60', map: '80' }
-        ];
 
         const repairDatabase = {
             'P0300': { desc: 'Misfire Random', parts: [ {name: 'Juego Bujías Iridium', cost: 48}, {name: 'Bobina Encendido (x1)', cost: 35} ], labor: 40 },
@@ -724,12 +784,12 @@
                 
                 currentTotal = newTotal.toFixed(2);
                 document.getElementById('q-total').innerText = "$ " + currentTotal;
-                alert("Cotización Actualizada Correctamente.");
+                alert("Cotización Actualizada.");
             }
         }
 
         function sendWhatsApp() {
-            let phone = prompt("Ingrese el número de WhatsApp del cliente (Ej: 584121234567):");
+            let phone = prompt("Ingrese el número de WhatsApp del cliente:");
             if(phone) {
                 phone = phone.replace(/\D/g,'');
                 const text = `Hola, este es un mensaje automático de *AutoFix PRO*.\n\nLe enviamos el presupuesto para su vehículo:\n\n*Diagnóstico:* ${document.getElementById('q-dtc').innerText}\n*Total Estimado:* $${currentTotal}\n\nPara aprobar el servicio, responda a este mensaje.`;
@@ -1044,4 +1104,4 @@
         function openHexEditor(){openModal('hexModal')}
     </script>
 </body>
-</html>
+</html>"
