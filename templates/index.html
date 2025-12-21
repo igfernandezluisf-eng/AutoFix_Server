@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.6.2</title>
+    <title>AutoFix PRO v7.7.0</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -110,16 +110,17 @@
         .inv-actions button { background: none; border: none; color: #aaa; cursor: pointer; margin-right: 5px; font-size: 1.1rem; }
         .inv-actions button:hover { color: #fff; }
 
-        /* VOICE ASSISTANT STYLES (v7.6.2) */
-        .voice-overlay { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 20px 40px; border-radius: 50px; border: 1px solid var(--main-color); display: none; flex-direction: column; align-items: center; gap: 10px; z-index: 1000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); backdrop-filter: blur(10px); }
-        .voice-waves { display: flex; gap: 5px; height: 30px; align-items: center; justify-content: center; }
-        .wave-bar { width: 4px; background: var(--main-color); animation: wave 1s infinite; border-radius: 2px; height: 10px; }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-        .wave-bar:nth-child(4) { animation-delay: 0.1s; }
-        .wave-bar:nth-child(5) { animation-delay: 0s; }
-        @keyframes wave { 0%, 100% { height: 10px; opacity: 0.5; } 50% { height: 30px; opacity: 1; box-shadow: 0 0 10px var(--main-color); } }
-        .voice-text { color: #fff; font-size: 1rem; font-weight: bold; min-width: 220px; text-align: center; font-style: italic; opacity: 0.9; }
+        /* VOICE ASSISTANT STYLES (v7.7.0) */
+        .voice-overlay { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10,10,20,0.95); padding: 25px 40px; border-radius: 50px; border: 1px solid var(--main-color); display: none; flex-direction: column; align-items: center; gap: 15px; z-index: 1000; box-shadow: 0 0 40px rgba(0, 243, 255, 0.3); backdrop-filter: blur(15px); width: 80%; max-width: 400px; transition: all 0.3s ease; }
+        .voice-waves { display: flex; gap: 6px; height: 40px; align-items: center; justify-content: center; }
+        .wave-bar { width: 5px; background: linear-gradient(to top, var(--main-color), #fff); animation: wave 1.2s infinite ease-in-out; border-radius: 10px; height: 10px; }
+        .wave-bar:nth-child(1) { animation-delay: 0.0s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.0s; }
+        @keyframes wave { 0%, 100% { height: 10px; opacity: 0.4; } 50% { height: 40px; opacity: 1; box-shadow: 0 0 15px var(--main-color); } }
+        .voice-text { color: #e0e0e0; font-size: 1.1rem; font-weight: 500; text-align: center; font-family: 'Segoe UI', sans-serif; letter-spacing: 0.5px; }
 
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     </style>
@@ -138,17 +139,17 @@
     </div>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.6.2</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.7.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.6.2 (FIXED VOICE CONFLICT)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.7.0 (AI NATURAL LANGUAGE)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.6.2</span></div>
+        <div class="brand">AutoFix <span>PRO v7.7.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -181,7 +182,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.6.2 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.7.0 Ready.</div></div>
 
     <div id="inventoryModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
@@ -482,7 +483,7 @@
 
         function toggleSunMode() { document.body.style.background = document.body.style.background==='white'?'#0a0a0f':'white'; }
         
-        // --- VOZ FIXED ---
+        // --- VOZ CON IA SIMULADA (v7.7.0) ---
         function toggleVoice() {
             if(isListening) { stopVoice(); return; }
             document.getElementById('voiceOverlay').style.display = 'flex';
@@ -496,27 +497,52 @@
                 recognition.onresult = (event) => {
                     const transcript = event.results[0][0].transcript;
                     document.getElementById('voiceText').innerText = transcript;
-                    if(event.results[0].isFinal) processVoiceCommand(transcript);
+                    if(event.results[0].isFinal) processNaturalLanguage(transcript);
                 };
                 recognition.onend = () => { if(isListening) stopVoice(); };
                 recognition.start();
             } else {
                 setTimeout(() => {
-                    document.getElementById('voiceText').innerText = "AutoFix, activar prueba de inyectores...";
-                    setTimeout(() => { processVoiceCommand("activar inyectores"); }, 2000);
+                    document.getElementById('voiceText').innerText = "Simulación: 'El carro se calienta mucho'...";
+                    setTimeout(() => { processNaturalLanguage("el carro se calienta mucho"); }, 2000);
                 }, 1000);
             }
         }
+        
         function stopVoice() { isListening = false; document.getElementById('voiceOverlay').style.display = 'none'; if(recognition) recognition.stop(); }
-        function processVoiceCommand(cmd) {
-            cmd = cmd.toLowerCase();
-            let response = "Comando no reconocido";
-            if(cmd.includes("inyector")) response = "Iniciando prueba de balance de inyectores.";
-            else if (cmd.includes("borrar")) response = "Borrando todos los códigos de falla.";
-            else if (cmd.includes("ventilador")) response = "Activando ventilador de alta velocidad.";
+        
+        // CEREBRO DE IA LOCAL (NLP)
+        function processNaturalLanguage(text) {
+            text = text.toLowerCase();
+            let response = "";
+            let action = null;
+
+            // Base de Conocimiento de Intenciones
+            if (text.includes("calienta") || text.includes("temperatura") || text.includes("hierve") || text.includes("vapor")) {
+                response = "Entendido, parece un problema térmico. Activando ventiladores y mostrando sensor de temperatura.";
+                // Aquí iría la llamada real: openModal('testsModal');
+            } 
+            else if (text.includes("falla") || text.includes("tiembla") || text.includes("potencia") || text.includes("inyector")) {
+                response = "Detecto posible fallo de cilindro. Abriendo prueba de balance de inyectores.";
+            }
+            else if (text.includes("luz") || text.includes("check") || text.includes("borra") || text.includes("limpia")) {
+                response = "Procediendo a escanear y borrar códigos de avería DTC. Sistema reiniciado.";
+            }
+            else if (text.includes("stock") || text.includes("queda") || text.includes("inventario") || text.includes("pieza")) {
+                response = "Abriendo el sistema de inventario para verificar existencias.";
+                setTimeout(openInventory, 2000);
+            }
+            else if (text.includes("hola") || text.includes("ayuda")) {
+                response = "Hola Jefe. Soy AutoFix. Puedes pedirme borrar códigos, activar sensores o revisar el stock.";
+            }
+            else {
+                response = "No estoy seguro de entender esa orden específica. ¿Podrías reformularla?";
+            }
+
             speak(response);
-            setTimeout(stopVoice, 3000);
+            setTimeout(stopVoice, 5000);
         }
+
         function speak(text) { const utterance = new SpeechSynthesisUtterance(text); window.speechSynthesis.speak(utterance); }
         // ----------------
 
