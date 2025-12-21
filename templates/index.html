@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.6.1</title>
+    <title>AutoFix PRO v7.6.2</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -48,7 +48,6 @@
         .data-table th { color: var(--main-color); border-bottom: 1px solid #444; padding: 8px; }
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
         .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
-        
         .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .service-btn { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; }
         .service-btn:active { background: #30363d; transform: scale(0.95); }
@@ -61,7 +60,6 @@
         .player-btn { background: #333; border: none; color: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
         .timeline { width: 100%; height: 5px; background: #333; margin-top: 20px; position: relative; }
         .timeline-progress { height: 100%; background: var(--neon-amber); width: 0%; }
-        
         .topology-container { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
         .gateway-node { background: #333; border: 2px solid #fff; color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; position: relative; }
         .gateway-node::after { content: ''; position: absolute; bottom: -20px; left: 50%; width: 2px; height: 20px; background: #555; }
@@ -72,7 +70,6 @@
         .mod-orange { background: var(--neon-amber); box-shadow: 0 0 5px var(--neon-amber); }
         .mod-red { background: var(--neon-red); box-shadow: 0 0 5px var(--neon-red); color: #fff; }
         .mod-grey { background: #333; border-color: #555; color: #777; }
-        
         .topology-tree { display: flex; flex-direction: column; align-items: center; position: relative; padding-bottom: 20px; }
         .gateway-icon { font-size: 2rem; color: #fff; background: #333; padding: 10px; border-radius: 50%; border: 2px solid var(--main-color); z-index: 2; margin-bottom: 10px; }
         .trunk-line { width: 4px; height: 30px; background: #555; margin-bottom: 0; }
@@ -90,24 +87,20 @@
         .left-branch .module-node.tree::before { right: -15px; }
         .right-branch .module-node.tree::before { left: -15px; }
         .topology-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; font-size: 0.7rem; justify-content: center; border-top: 1px solid #333; padding-top: 10px; width: 100%; }
-
         .hex-grid { font-family: 'Courier New', monospace; font-size: 0.8rem; display: grid; grid-template-columns: 50px 1fr 1fr; gap: 10px; text-align: left; height: 300px; overflow-y: auto; background: #000; padding: 10px; border: 1px solid #333; color: var(--neon-green); }
         .hex-addr { color: #888; }
         .hex-data { color: var(--main-color); letter-spacing: 2px; }
         .hex-ascii { color: #aaa; }
-
         .quote-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; text-align: left; }
         .quote-title { color: var(--neon-green); font-size: 1.2rem; font-weight: bold; }
         .quote-meta { font-size: 0.8rem; color: #888; }
         .quote-box { background: rgba(255,0,0,0.1); border: 1px solid var(--neon-red); padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: left; }
         .quote-total { background: #222; padding: 15px; border-radius: 5px; margin-top: 15px; text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--neon-amber); border: 1px solid #444; }
-
         .client-card { background: #222; border-left: 4px solid var(--main-color); padding: 15px; margin-bottom: 10px; border-radius: 5px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
         .client-info h3 { margin: 0; font-size: 1rem; color: #fff; }
         .client-info p { margin: 2px 0; font-size: 0.8rem; color: #888; }
         .client-actions button { background: none; border: none; color: #aaa; cursor: pointer; font-size: 1.2rem; margin-left: 10px; }
         .client-actions button:hover { color: #fff; }
-
         .inv-search { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 5px; margin-bottom: 15px; }
         .inv-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         .inv-table th { background: #1a1a1a; color: #888; padding: 10px; text-align: left; }
@@ -117,7 +110,7 @@
         .inv-actions button { background: none; border: none; color: #aaa; cursor: pointer; margin-right: 5px; font-size: 1.1rem; }
         .inv-actions button:hover { color: #fff; }
 
-        /* VOICE ASSISTANT STYLES (v7.6.1) */
+        /* VOICE ASSISTANT STYLES (v7.6.2) */
         .voice-overlay { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 20px 40px; border-radius: 50px; border: 1px solid var(--main-color); display: none; flex-direction: column; align-items: center; gap: 10px; z-index: 1000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); backdrop-filter: blur(10px); }
         .voice-waves { display: flex; gap: 5px; height: 30px; align-items: center; justify-content: center; }
         .wave-bar { width: 4px; background: var(--main-color); animation: wave 1s infinite; border-radius: 2px; height: 10px; }
@@ -145,17 +138,17 @@
     </div>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.6.1</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.6.2</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.6.1 (FIXED VOICE ASSISTANT)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.6.2 (FIXED VOICE CONFLICT)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.6.1</span></div>
+        <div class="brand">AutoFix <span>PRO v7.6.2</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -188,7 +181,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.6.1 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.6.2 Ready.</div></div>
 
     <div id="inventoryModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
@@ -484,75 +477,52 @@
         let hexTimer = null;
         let currentTotal = 0; 
         let isEditingQuote = false;
-        let recognition; // Para voz
+        let recognition; 
         let isListening = false;
 
-        // --- SISTEMA DE VOZ (v7.6.1 - FIXED) ---
+        function toggleSunMode() { document.body.style.background = document.body.style.background==='white'?'#0a0a0f':'white'; }
+        
+        // --- VOZ FIXED ---
         function toggleVoice() {
-            if(isListening) {
-                stopVoice();
-                return;
-            }
-            
+            if(isListening) { stopVoice(); return; }
             document.getElementById('voiceOverlay').style.display = 'flex';
             document.getElementById('voiceText').innerText = "Escuchando...";
             isListening = true;
-
-            // Intentar usar API Nativa
             if ('webkitSpeechRecognition' in window) {
                 recognition = new webkitSpeechRecognition();
                 recognition.lang = 'es-ES';
                 recognition.continuous = false;
                 recognition.interimResults = true;
-
                 recognition.onresult = (event) => {
                     const transcript = event.results[0][0].transcript;
                     document.getElementById('voiceText').innerText = transcript;
-                    if(event.results[0].isFinal) {
-                        processVoiceCommand(transcript);
-                    }
+                    if(event.results[0].isFinal) processVoiceCommand(transcript);
                 };
-
                 recognition.onend = () => { if(isListening) stopVoice(); };
                 recognition.start();
             } else {
-                // Modo Simulación si no hay API
                 setTimeout(() => {
                     document.getElementById('voiceText').innerText = "AutoFix, activar prueba de inyectores...";
-                    setTimeout(() => {
-                        processVoiceCommand("activar inyectores");
-                    }, 2000);
+                    setTimeout(() => { processVoiceCommand("activar inyectores"); }, 2000);
                 }, 1000);
             }
         }
-
-        function stopVoice() {
-            isListening = false;
-            document.getElementById('voiceOverlay').style.display = 'none';
-            if(recognition) recognition.stop();
-        }
-
+        function stopVoice() { isListening = false; document.getElementById('voiceOverlay').style.display = 'none'; if(recognition) recognition.stop(); }
         function processVoiceCommand(cmd) {
             cmd = cmd.toLowerCase();
             let response = "Comando no reconocido";
-            
-            if(cmd.includes("inyector") || cmd.includes("inyectores")) {
-                response = "Iniciando prueba de balance de inyectores.";
-                // Aquí iría la lógica real
-            } else if (cmd.includes("borrar") || cmd.includes("códigos")) {
-                response = "Borrando todos los códigos de falla del sistema.";
-            } else if (cmd.includes("ventilador")) {
-                response = "Activando ventilador de alta velocidad.";
-            }
-
+            if(cmd.includes("inyector")) response = "Iniciando prueba de balance de inyectores.";
+            else if (cmd.includes("borrar")) response = "Borrando todos los códigos de falla.";
+            else if (cmd.includes("ventilador")) response = "Activando ventilador de alta velocidad.";
             speak(response);
             setTimeout(stopVoice, 3000);
         }
+        function speak(text) { const utterance = new SpeechSynthesisUtterance(text); window.speechSynthesis.speak(utterance); }
+        // ----------------
 
-        function speak(text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            window.speechSynthesis.speak(utterance);
-        }
+        function startScan() { alert("Escanéo OBD2 Iniciado..."); setTimeout(()=>alert("Sin códigos de falla (DTC) encontrados."), 2000); }
+        function testSecurity() { alert("Bypassing Security Gateway... OK"); }
+        function openHexEditor(){openModal('hexModal')}
 
         // --- SISTEMA CRM (v7.3.2) ---
         let crmDatabase = [
@@ -805,64 +775,6 @@
             }
         }
 
-        const modulesHS = ["ECM", "TCM", "ABS", "SRS", "BCM", "EPS", "TPMS", "EPB", "SAS", "IMMO"];
-        const modulesMS = ["IPC", "HVAC", "RAD", "AMP", "PDM", "DDM", "RDM", "LDM", "SUN", "PAM"];
-
-        function openTopology() {
-            openModal('topologyModal');
-            const hsList = document.getElementById('hsCanList');
-            const msList = document.getElementById('msCanList');
-            hsList.innerHTML = "";
-            msList.innerHTML = "";
-            
-            const createNode = (name) => {
-                let r = Math.random();
-                let statusClass = "mod-green";
-                let action = "alert('Módulo Online. Sin códigos.')";
-                
-                if(r < 0.25) { statusClass = "mod-green"; action = "alert('OK: Sistema Operativo')"; }
-                else if(r < 0.50) { statusClass = "mod-orange"; action = "alert('DTC: B1000 - Fallo Interno')"; }
-                else if(r < 0.75) { statusClass = "mod-red"; action = "alert('ERROR: Sin Comunicación')"; }
-                else { statusClass = "mod-grey"; action = "alert('N/A: No Equipado')"; }
-                
-                return `<div class="node-wrapper"><div class="module-node tree ${statusClass}" onclick="${action}">${name}</div></div>`;
-            };
-
-            modulesHS.forEach(mod => { hsList.innerHTML += createNode(mod); });
-            modulesMS.forEach(mod => { msList.innerHTML += createNode(mod); });
-        }
-
-        function openHexEditor() { openModal('hexModal'); startHexDump(); }
-        function closeHex() { closeModal('hexModal'); if(hexTimer) clearInterval(hexTimer); }
-
-        function startHexDump() {
-            const hexAddr = document.getElementById('hexAddr');
-            const hexData = document.getElementById('hexData');
-            const hexAscii = document.getElementById('hexAscii');
-            if(hexTimer) clearInterval(hexTimer);
-            let startAddr = 0;
-            const updateMatrix = () => {
-                let htmlAddr = "", htmlData = "", htmlAscii = "";
-                for(let i=0; i<16; i++) {
-                    let addr = (startAddr + i*16).toString(16).toUpperCase().padStart(4, '0');
-                    htmlAddr += `0x${addr}<br>`;
-                    let rowData = "", rowAscii = "";
-                    for(let j=0; j<8; j++) {
-                        let val = Math.floor(Math.random() * 256);
-                        if(Math.random() > 0.8) val = Math.floor(Math.random() * 256);
-                        let hex = val.toString(16).toUpperCase().padStart(2, '0');
-                        rowData += `${hex} `;
-                        rowAscii += (val > 32 && val < 126) ? String.fromCharCode(val) : '.';
-                    }
-                    htmlData += `${rowData}<br>`;
-                    htmlAscii += `${rowAscii}<br>`;
-                }
-                hexAddr.innerHTML = htmlAddr; hexData.innerHTML = htmlData; hexAscii.innerHTML = htmlAscii;
-            };
-            updateMatrix();
-            hexTimer = setInterval(updateMatrix, 500);
-        }
-
         async function attemptLogin() {
             const email = document.getElementById('login-email').value.trim();
             const btn = document.getElementById('btnLogin');
@@ -921,194 +833,12 @@
             updateAllData("--", "--", "OFFLINE", false);
         }
 
-        function openFreezeFrame() {
-            openModal('freezeModal');
-            const error = freezeFrames[Math.floor(Math.random() * freezeFrames.length)];
-            document.getElementById('ff-code').innerText = error.code;
-            document.getElementById('ff-desc').innerText = error.desc;
-            document.getElementById('ff-rpm').innerText = error.rpm + " rpm";
-            document.getElementById('ff-vss').innerText = error.vss + " km/h";
-            document.getElementById('ff-ect').innerText = error.ect + " °C";
-            document.getElementById('ff-load').innerText = error.load + " %";
-            document.getElementById('ff-trim').innerText = error.trim;
-            document.getElementById('ff-tps').innerText = error.tps + " %";
-            document.getElementById('ff-map').innerText = error.map + " kPa";
-        }
-
-        function toggleRec() {
-            const btn = document.getElementById('btnRec');
-            if(!isRecording) {
-                isRecording = true;
-                logSession = [];
-                btn.className = "action-btn rec-active";
-                alert("GRABACIÓN INICIADA\nConduzca el vehículo para capturar datos.");
-                document.getElementById('conn-dot').className = 'dot rec';
-            } else {
-                isRecording = false;
-                btn.className = "action-btn btn-red";
-                document.getElementById('conn-dot').className = 'dot active';
-                if(logSession.length > 5) {
-                    const name = "Log " + new Date().toLocaleTimeString();
-                    savedLogs.push({name: name, data: [...logSession]});
-                    alert("GRABACIÓN GUARDADA:\n" + name + "\n(" + logSession.length + " segundos)");
-                } else {
-                    alert("Grabación muy corta, no se guardó.");
-                }
-            }
-        }
-
-        function openHistory() {
-            openModal('historyModal');
-            const list = document.getElementById('logList');
-            list.innerHTML = "";
-            if(savedLogs.length === 0) {
-                list.innerHTML = '<p style="color:#888;">No hay grabaciones recientes.</p>';
-                return;
-            }
-            savedLogs.forEach((log, index) => {
-                list.innerHTML += `<div style="background:#333; padding:10px; margin:5px 0; border-radius:5px; cursor:pointer;" onclick="loadLog(${index})">
-                    <strong>${log.name}</strong><br><small>${log.data.length} segundos</small>
-                </div>`;
-            });
-        }
-
-        let currentPlayLog = null;
-        function loadLog(index) {
-            currentPlayLog = savedLogs[index].data;
-            document.getElementById('logList').style.display = 'none';
-            document.getElementById('logPlayer').style.display = 'block';
-            document.getElementById('playTitle').innerText = savedLogs[index].name;
-        }
-
-        function playLog() {
-            if(!currentPlayLog) return;
-            let i = 0;
-            const bar = document.getElementById('playProgress');
-            if(playInterval) clearInterval(playInterval);
-            playInterval = setInterval(() => {
-                if(i >= currentPlayLog.length) {
-                    clearInterval(playInterval);
-                    return;
-                }
-                const data = currentPlayLog[i];
-                updateAllData(data.rpm, data.temp, "PLAYBACK", true);
-                bar.style.width = ((i / currentPlayLog.length) * 100) + "%";
-                i++;
-            }, 1000);
-        }
-
-        function pauseLog() { if(playInterval) clearInterval(playInterval); }
-
-        function stopLog() {
-            pauseLog();
-            document.getElementById('logPlayer').style.display = 'none';
-            document.getElementById('logList').style.display = 'block';
-            setStatusOffline();
-        }
-
-        function startWizard(serviceType) {
-            closeModal('serviceModal');
-            openModal('wizardModal');
-            const data = servicesData[serviceType];
-            document.getElementById('wizTitle').innerText = data.title;
-            document.getElementById('wizInstr').innerText = data.instr;
-            nextStep(1);
-        }
-
-        function nextStep(step) {
-            for(let i=1; i<=4; i++) document.getElementById('wizStep'+i).style.display = 'none';
-            document.getElementById('wizStep'+step).style.display = 'block';
-        }
-
-        function executeAction(actionName) {
-            nextStep(3);
-            let width = 0;
-            const bar = document.getElementById('wizBar');
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    nextStep(4);
-                } else {
-                    width++;
-                    bar.style.width = width + '%';
-                }
-            }, 30);
-        }
-
-        function openScope() {
-            openModal('scopeModal');
-            resetScope();
-        }
-
-        function closeScope() {
-            closeModal('scopeModal');
-            if(scopeTimer) clearInterval(scopeTimer);
-        }
-
-        function resetScope() {
-            if(scopeTimer) clearInterval(scopeTimer);
-            const sensor = document.getElementById('scopeSensor').value;
-            const canvas = document.getElementById('scopeCanvas');
-            const ctx = canvas.getContext('2d');
-            const label = document.getElementById('scopeLabel');
-            label.innerText = "Monitor: " + sensor + " (Live)";
-            let x = 0; let y = 0;
-            ctx.fillStyle = "#000"; ctx.fillRect(0,0,300,150);
-
-            scopeTimer = setInterval(() => {
-                x += 3; 
-                if(x > 300) { x = 0; ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.fillRect(0,0,300,150); }
-                const t = Date.now() / 1000;
-                switch(sensor) {
-                    case 'O2': y = 75 + Math.sin(t * 2) * 40 + (Math.random() * 5); break;
-                    case 'CKP': y = 75 + Math.sin(t * 20) * 50; break;
-                    case 'CMP': y = (Math.sin(t * 10) > 0) ? 40 : 110; break;
-                    case 'MAF': y = 75 + Math.sin(t * 5) * 30 + (Math.random() * 10); break;
-                    case 'TPS': y = 120 - (Math.sin(t * 0.5) * 40 + 40); break;
-                    case 'MAP': y = 60 + (Math.random() * 10); break;
-                    case 'KS': y = 75; if(Math.random() > 0.95) y -= 50 * Math.random(); break;
-                    case 'ABS': y = 75 + Math.sin(t * 15) * 40; break;
-                    case 'INJ': y = (Math.sin(t * 15) > 0.8) ? 100 : 20; break;
-                    case 'IG': y = 75; if(Math.random() > 0.9) y = 10; break;
-                    default: y = 75;
-                }
-                ctx.fillStyle = "#00ff9d"; ctx.fillRect(x, y, 3, 3);
-            }, 20);
-        }
-
-        async function connectBluetooth() {
-            if (!navigator.bluetooth) { alert("Use Google Chrome en Android para Bluetooth."); return; }
-            try {
-                const device = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true,
-                    optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000fff0-0000-1000-8000-00805f9b34fb', 'generic_access']
-                });
-                alert("Conectado: " + device.name);
-                startDummyBLELoop(device.name);
-            } catch (e) { alert("Error Conexión: " + e.message); }
-        }
-
-        function startDummyBLELoop(name) {
-            let fakeRpm = 800;
-            setInterval(() => {
-                if(!isRecording && !playInterval) {
-                    fakeRpm += Math.floor(Math.random() * 100) - 50;
-                    updateAllData(fakeRpm, 88, "BLE: " + name, true);
-                }
-            }, 1000);
-        }
-
         function connectOrSync() { if (hardwareMode === 'elm') connectBluetooth(); else window.location.reload(true); }
         function saveSettings() { hardwareMode = document.getElementById('conf-hw').value; alert("Configuración Aplicada."); closeModal('settingsModal'); if(hardwareMode !== 'sim') setStatusOffline(); }
         function openOdometerTool() { if(currentUserPlan !== 'MASTER') { alert("Nivel MASTER requerido"); return; } openModal('odoModal'); document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km"; }
         function writeOdometer() { simulatedKm = parseInt(document.getElementById('odo-new').value); document.getElementById('odo-current').innerText = simulatedKm.toLocaleString() + " Km"; alert("Escritura Completa."); }
         function openModal(id) { document.getElementById(id).style.display = 'block'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function toggleSunMode() { document.body.style.background = document.body.style.background==='white'?'#0a0a0f':'white'; }
-        function toggleVoice() { alert("Escuchando comandos por voz..."); }
-        function startScan() { alert("Escanéo OBD2 Iniciado..."); setTimeout(()=>alert("Sin códigos de falla (DTC) encontrados."), 2000); }
-        function testSecurity() { alert("Bypassing Security Gateway... OK"); }
-        function openHexEditor(){openModal('hexModal')}
     </script>
 </body>
-</html>"
+</html>
