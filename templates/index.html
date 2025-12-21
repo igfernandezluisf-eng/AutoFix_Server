@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AutoFix PRO v7.4.0</title>
+    <title>AutoFix PRO v7.5.X</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
@@ -48,7 +48,6 @@
         .data-table th { color: var(--main-color); border-bottom: 1px solid #444; padding: 8px; }
         .data-table td { border-bottom: 1px solid #333; padding: 8px; color: #ccc; }
         .odo-display { font-family: 'Courier New', monospace; font-size: 2rem; color: var(--neon-amber); background: #000; border: 2px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
-        
         .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .service-btn { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; }
         .service-btn:active { background: #30363d; transform: scale(0.95); }
@@ -61,7 +60,6 @@
         .player-btn { background: #333; border: none; color: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
         .timeline { width: 100%; height: 5px; background: #333; margin-top: 20px; position: relative; }
         .timeline-progress { height: 100%; background: var(--neon-amber); width: 0%; }
-        
         .topology-container { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
         .gateway-node { background: #333; border: 2px solid #fff; color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; position: relative; }
         .gateway-node::after { content: ''; position: absolute; bottom: -20px; left: 50%; width: 2px; height: 20px; background: #555; }
@@ -72,7 +70,6 @@
         .mod-orange { background: var(--neon-amber); box-shadow: 0 0 5px var(--neon-amber); }
         .mod-red { background: var(--neon-red); box-shadow: 0 0 5px var(--neon-red); color: #fff; }
         .mod-grey { background: #333; border-color: #555; color: #777; }
-        
         .topology-tree { display: flex; flex-direction: column; align-items: center; position: relative; padding-bottom: 20px; }
         .gateway-icon { font-size: 2rem; color: #fff; background: #333; padding: 10px; border-radius: 50%; border: 2px solid var(--main-color); z-index: 2; margin-bottom: 10px; }
         .trunk-line { width: 4px; height: 30px; background: #555; margin-bottom: 0; }
@@ -90,25 +87,20 @@
         .left-branch .module-node.tree::before { right: -15px; }
         .right-branch .module-node.tree::before { left: -15px; }
         .topology-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; font-size: 0.7rem; justify-content: center; border-top: 1px solid #333; padding-top: 10px; width: 100%; }
-
         .hex-grid { font-family: 'Courier New', monospace; font-size: 0.8rem; display: grid; grid-template-columns: 50px 1fr 1fr; gap: 10px; text-align: left; height: 300px; overflow-y: auto; background: #000; padding: 10px; border: 1px solid #333; color: var(--neon-green); }
         .hex-addr { color: #888; }
         .hex-data { color: var(--main-color); letter-spacing: 2px; }
         .hex-ascii { color: #aaa; }
-
         .quote-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; text-align: left; }
         .quote-title { color: var(--neon-green); font-size: 1.2rem; font-weight: bold; }
         .quote-meta { font-size: 0.8rem; color: #888; }
         .quote-box { background: rgba(255,0,0,0.1); border: 1px solid var(--neon-red); padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: left; }
         .quote-total { background: #222; padding: 15px; border-radius: 5px; margin-top: 15px; text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--neon-amber); border: 1px solid #444; }
-
         .client-card { background: #222; border-left: 4px solid var(--main-color); padding: 15px; margin-bottom: 10px; border-radius: 5px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
         .client-info h3 { margin: 0; font-size: 1rem; color: #fff; }
         .client-info p { margin: 2px 0; font-size: 0.8rem; color: #888; }
         .client-actions button { background: none; border: none; color: #aaa; cursor: pointer; font-size: 1.2rem; margin-left: 10px; }
         .client-actions button:hover { color: #fff; }
-
-        /* ESTILOS INVENTARIO (v7.4.0) */
         .inv-search { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 5px; margin-bottom: 15px; }
         .inv-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         .inv-table th { background: #1a1a1a; color: #888; padding: 10px; text-align: left; }
@@ -124,17 +116,17 @@
 <body>
 
     <div id="loginOverlay">
-        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.4.0</span></h1>
+        <h1 style="color:#fff; font-family:'Segoe UI';">AutoFix <span style="color:var(--main-color)">PRO v7.5.0</span></h1>
         <div style="width: 100%; max-width: 320px; text-align: center; background: #141419; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             <h2 style="color:#ccc;">Acceso Taller</h2>
             <input type="email" id="login-email" class="input-dark" placeholder="correo@taller.com" style="text-align:center;">
             <button id="btnLogin" class="btn-full" onclick="attemptLogin()">INICIAR SISTEMA</button>
-            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.4.0 (INVENTORY MANAGER)</div>
+            <div id="login-msg" style="margin-top:20px; color:#ff0055; font-size:0.8rem;">v7.5.0 (STOCK SYNC SYSTEM)</div>
         </div>
     </div>
 
     <header>
-        <div class="brand">AutoFix <span>PRO v7.4.0</span></div>
+        <div class="brand">AutoFix <span>PRO v7.5.0</span></div>
         <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">OFFLINE</span></div>
     </header>
 
@@ -167,7 +159,7 @@
     </div>
 
     <button class="scan-btn" onclick="startScan()">🔍 ESCANEAR SISTEMA</button>
-    <div class="console" id="console"><div>> AutoFix v7.4.0 Ready.</div></div>
+    <div class="console" id="console"><div>> AutoFix v7.5.0 Ready.</div></div>
 
     <div id="inventoryModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
@@ -244,10 +236,11 @@
                 <tbody id="quoteBody"></tbody>
             </table>
             <div class="quote-total">TOTAL: <span id="q-total">$ 0.00</span></div>
-            <div style="margin-top:20px; display:flex; gap:10px; justify-content: flex-end;">
-                <button id="btnEditQuote" class="btn-small" style="background:#333;" onclick="toggleEditQuote()">✏️ EDITAR</button>
-                <button class="btn-small" style="background:#0072ff; border-color:#0072ff;" onclick="alert('PDF Generado para Impresión')">🖨️ IMPRIMIR</button>
-                <button class="btn-small" style="background:var(--whatsapp-green); border-color:var(--whatsapp-green); color:white; font-weight:bold;" onclick="sendWhatsApp()">📱 ENVIAR A CLIENTE</button>
+            <div style="margin-top:20px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button id="btnEditQuote" class="btn-small" style="width:100%; background:#333;" onclick="toggleEditQuote()">✏️ EDITAR</button>
+                <button class="btn-small" style="width:100%; background:#0072ff; border-color:#0072ff;" onclick="alert('PDF Generado')">🖨️ IMPRIMIR</button>
+                <button class="btn-small" style="width:100%; background:var(--whatsapp-green); border-color:var(--whatsapp-green); color:white;" onclick="sendWhatsApp()">📱 WHATSAPP</button>
+                <button class="btn-small" style="width:100%; background:var(--neon-green); color:black; font-weight:bold; border-color:var(--neon-green);" onclick="confirmJob()">✅ FINALIZAR TRABAJO</button>
             </div>
         </div>
     </div>
@@ -575,7 +568,6 @@
                 inventoryDB.push({ id: Date.now(), name: name, brand: brand, stock: stock, cost: cost, price: price });
                 renderInventory();
                 document.getElementById('newProductForm').style.display = 'none';
-                // Limpiar
                 document.getElementById('inv-name').value = "";
                 document.getElementById('inv-brand').value = "";
                 document.getElementById('inv-stock').value = "";
@@ -598,6 +590,22 @@
             if(confirm("¿Borrar producto del inventario?")) {
                 inventoryDB.splice(index, 1);
                 renderInventory();
+            }
+        }
+
+        // --- SISTEMA COTIZADOR + SYNC (v7.5.0) ---
+        function confirmJob() {
+            if(confirm("¿Confirmar trabajo? Esto descontará los repuestos del inventario.")) {
+                // Simulación de descuento (En un caso real, buscaría por ID)
+                // Aquí descontamos genéricamente para la demo
+                if(inventoryDB.length > 0 && inventoryDB[0].stock > 0) {
+                    inventoryDB[0].stock -= 4; // Descuenta 4 bujías simuladas
+                    alert("Trabajo Registrado.\nInventario Actualizado (-4 Bujías).");
+                    renderInventory(); // Refresca la UI de inventario si está abierta
+                    closeModal('quoteModal');
+                } else {
+                    alert("Error: Stock insuficiente para realizar este trabajo.");
+                }
             }
         }
 
